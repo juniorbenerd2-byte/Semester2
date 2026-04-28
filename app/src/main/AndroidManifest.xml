@@ -11,24 +11,28 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Semester2">
-
+        
         <activity
-            android:name=".MainActivity"
+            android:name=".kategori.DataKategoriActivity"
+            android:exported="false" />
+            
+        <activity
+            android:name=".kategori.KategoriCardActivity"
+            android:exported="false" />
+            
+        <activity
+            android:name=".kategori.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
+        
         <activity
-            android:name=".kategori"
+            android:name=".kategori.KategoriActivity"
             android:exported="false" />
-
-        <activity
-            android:name=".kategoricard"
-            android:exported="false" />
-
+            
     </application>
 
 </manifest>

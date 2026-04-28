@@ -28,13 +28,6 @@
                 android:textStyle="bold"
                 android:fontFamily="sans-serif-medium"/>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Point of Sales"
-                android:textSize="14sp"
-                android:textColor="#6B7280"
-                android:layout_marginTop="0dp"/>
         </LinearLayout>
 
         <androidx.cardview.widget.CardView
@@ -93,15 +86,16 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
 
+
                     <RadioButton
                         android:id="@+id/rbAktif"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Aktif"
-                        android:textColor="#1F2937"
                         android:buttonTint="#10B981"
-                        android:checked="false"/>
+                        android:checked="false"
+                        android:text="Aktif"
+                        android:textColor="#1F2937" />
 
                     <RadioButton
                         android:id="@+id/rbTidakAktif"
@@ -120,13 +114,15 @@
             android:id="@+id/btnSimpan"
             android:layout_width="match_parent"
             android:layout_height="56dp"
+            android:layout_marginTop="24dp"
+            android:backgroundTint="#FFc300"
             android:text="Simpan"
-            android:backgroundTint="#10B981"
             android:textColor="#FFFFFF"
-            android:textStyle="bold"
             android:textSize="16sp"
-            app:cornerRadius="12dp"
-            android:layout_marginTop="24dp"/>
+            android:textStyle="bold"
+            app:cornerRadius="12dp" />
+
+
 
     </LinearLayout>
 </ScrollView>
