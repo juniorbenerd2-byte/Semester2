@@ -21,7 +21,7 @@
             android:exported="false" />
             
         <activity
-            android:name=".kategori.MainActivity"
+            android:name=".kategori.MainKategoriActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
