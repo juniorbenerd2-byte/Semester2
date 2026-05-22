@@ -1,0 +1,109 @@
+package com.example.semester2.kategori
+
+import android.os.Bundle
+import android.util.Log
+import android.view.View
+import android.widget.Button
+import android.widget.RadioButton
+import android.widget.RadioGroup
+import android.widget.Toast
+import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import com.example.semester2.R
+import com.google.android.material.textfield.TextInputEditText
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
+
+class KategoriActivity : AppCompatActivity() {
+
+    private lateinit var etNamaKategori: TextInputEditText
+    private lateinit var radioGroupStatus: RadioGroup
+    private lateinit var rbAktif: RadioButton
+    private lateinit var rbTidakAktif: RadioButton
+    private lateinit var btnSimpan: Button
+
+    private lateinit var database: DatabaseReference
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
+        setContentView(R.layout.activity_kategori)
+
+        initView()
+        setupFirebase()
+        setupListeners()
+    }
+
+    private fun initView() {
+        etNamaKategori = findViewById(R.id.etNamaKategori)
+        radioGroupStatus = findViewById(R.id.radioGroupStatus)
+        rbAktif = findViewById(R.id.rbAktif)
+        rbTidakAktif = findViewById(R.id.rbTidakAktif)
+        btnSimpan = findViewById(R.id.btnSimpan)
+
+        val mainView = findViewById<View>(R.id.main_kategori)
+        ViewCompat.setOnApplyWindowInsetsListener(mainView) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            insets
+        }
+    }
+
+    private fun setupFirebase() {
+        // Menggunakan referensi "kategori" sesuai dengan struktur data yang diinginkan
+        database = FirebaseDatabase.getInstance().getReference("kategori")
+    }
+
+    private fun setupListeners() {
+        btnSimpan.setOnClickListener {
+            simpanKategori()
+        }
+    }
+
+    private fun simpanKategori() {
+        val namaKategori = etNamaKategori.text.toString().trim()
+
+        // Validasi input
+        if (namaKategori.isEmpty()) {
+            etNamaKategori.error = "Nama kategori tidak boleh kosong"
+            return
+        }
+
+        val selectedId = radioGroupStatus.checkedRadioButtonId
+        if (selectedId == -1) {
+            Toast.makeText(this, "Pilih status kategori", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val status = if (selectedId == R.id.rbAktif) "Aktif" else "Tidak Aktif"
+
+        btnSimpan.isEnabled = false
+
+        // Mode TAMBAH Data ke Firebase
+        val myRef = database.push()
+        val kategoriId = myRef.key ?: run {
+            Log.e("DEBUG", "key null!")
+            btnSimpan.isEnabled = true
+            return
+        }
+
+        val kategoriData = hashMapOf<String, Any>(
+            "idKategori" to kategoriId,
+            "namaKategori" to namaKategori,
+            "statusKategori" to status
+        )
+
+        myRef.setValue(kategoriData)
+            .addOnSuccessListener {
+                Toast.makeText(this, "Kategori berhasil disimpan", Toast.LENGTH_SHORT).show()
+                finish() // Menutup activity setelah berhasil simpan
+            }
+            .addOnFailureListener { error ->
+                Log.e("DEBUG", "Simpan gagal: ${error.message}")
+                btnSimpan.isEnabled = true
+                Toast.makeText(this, "Gagal menyimpan: ${error.message}", Toast.LENGTH_SHORT).show()
+            }
+    }
+}
