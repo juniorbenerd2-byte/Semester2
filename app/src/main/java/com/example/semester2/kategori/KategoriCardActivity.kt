@@ -1,5 +1,6 @@
 package com.example.semester2.kategori
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
@@ -20,6 +21,7 @@ class KategoriCardActivity : AppCompatActivity() {
 
     private lateinit var tvKategori: TextView
 
+    @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
