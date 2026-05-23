@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F9FAFB">
+    android:background="@color/bg_color">
 
     <LinearLayout
         android:id="@+id/header"
@@ -30,7 +30,7 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif-medium"
                     android:text="Selamat Belanja, Junior"
-                    android:textColor="#1F2937"
+                    android:textColor="@color/text_primary"
                     android:textSize="24sp"
                     android:textStyle="bold" />
 
@@ -40,7 +40,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
                     android:fontFamily="sans-serif"
-                    android:textColor="#6B7280"
+                    android:textColor="@color/text_secondary"
                     android:textSize="14sp" />
             </LinearLayout>
 
@@ -50,7 +50,7 @@
                 android:layout_height="40dp"
                 app:cardCornerRadius="20dp"
                 app:cardElevation="0dp"
-                android:backgroundTint="#F3F4F6">
+                android:backgroundTint="@color/profile_bg">
 
                 <ImageView
                     android:id="@+id/ProfileTop"
@@ -82,7 +82,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="Estimasi Hari Ini :"
-                    android:textColor="#FFFFFF"
+                    android:textColor="@color/text_on_accent"
                     android:textSize="16sp"
                     android:textStyle="bold" />
 
@@ -91,7 +91,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Rp 0"
-                    android:textColor="#FFFFFF"
+                    android:textColor="@color/text_on_accent"
                     android:textSize="18sp"
                     android:textStyle="bold" />
             </LinearLayout>
@@ -118,7 +118,7 @@
                         android:layout_height="48dp"
                         app:cardCornerRadius="24dp"
                         app:cardElevation="0dp"
-                        android:backgroundTint="#FFFFFF">
+                        android:backgroundTint="@color/btn_icon_bg">
 
                         <ImageView
                             android:layout_width="24dp"
@@ -132,7 +132,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
                         android:text="Kirim"
-                        android:textColor="#FFFFFF"
+                        android:textColor="@color/text_on_accent"
                         android:textSize="12sp" />
                 </LinearLayout>
 
@@ -151,7 +151,7 @@
                         android:layout_height="48dp"
                         app:cardCornerRadius="24dp"
                         app:cardElevation="0dp"
-                        android:backgroundTint="#FFFFFF">
+                        android:backgroundTint="@color/btn_icon_bg">
 
                         <ImageView
                             android:layout_width="24dp"
@@ -166,7 +166,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
                         android:text="TopUp"
-                        android:textColor="#FFFFFF"
+                        android:textColor="@color/text_on_accent"
                         android:textSize="12sp" />
                 </LinearLayout>
 
@@ -185,7 +185,7 @@
                         android:layout_height="48dp"
                         app:cardCornerRadius="24dp"
                         app:cardElevation="0dp"
-                        android:backgroundTint="#FFFFFF">
+                        android:backgroundTint="@color/btn_icon_bg">
 
                         <ImageView
                             android:layout_width="24dp"
@@ -200,7 +200,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
                         android:text="Minta"
-                        android:textColor="#FFFFFF"
+                        android:textColor="@color/text_on_accent"
                         android:textSize="12sp" />
                 </LinearLayout>
             </LinearLayout>
@@ -220,7 +220,7 @@
                 android:layout_height="85dp"
                 android:layout_margin="4dp"
                 android:layout_columnWeight="1"
-                android:backgroundTint="#FFFFFF"
+                android:backgroundTint="@color/card_bg_color"
                 app:cardCornerRadius="16dp"
                 app:cardElevation="2dp">
 
@@ -240,7 +240,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
                         android:text="Pegawai"
-                        android:textColor="#1F2937"
+                        android:textColor="@color/text_primary"
                         android:textSize="11sp"
                         android:textStyle="bold" />
                 </LinearLayout>
@@ -254,7 +254,7 @@
                 android:layout_height="85dp"
                 android:layout_margin="4dp"
                 android:layout_columnWeight="1"
-                android:backgroundTint="#FFFFFF"
+                android:backgroundTint="@color/card_bg_color"
                 app:cardCornerRadius="16dp"
                 app:cardElevation="2dp">
 
@@ -274,7 +274,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
                         android:text="Layanan"
-                        android:textColor="#1F2937"
+                        android:textColor="@color/text_primary"
                         android:textSize="11sp"
                         android:textStyle="bold" />
                 </LinearLayout>
@@ -286,7 +286,7 @@
                 android:layout_height="85dp"
                 android:layout_margin="4dp"
                 android:layout_columnWeight="1"
-                android:backgroundTint="#FFFFFF"
+                android:backgroundTint="@color/card_bg_color"
                 app:cardCornerRadius="16dp"
                 app:cardElevation="2dp">
 
@@ -306,7 +306,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
                         android:text="Kategori"
-                        android:textColor="#1F2937"
+                        android:textColor="@color/text_primary"
                         android:textSize="11sp"
                         android:textStyle="bold" />
                 </LinearLayout>
@@ -319,7 +319,7 @@
                 android:layout_height="85dp"
                 android:layout_margin="4dp"
                 android:layout_columnWeight="1"
-                android:backgroundTint="#FFFFFF"
+                android:backgroundTint="@color/card_bg_color"
                 app:cardCornerRadius="16dp"
                 app:cardElevation="2dp">
 
@@ -339,7 +339,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
                         android:text="Print"
-                        android:textColor="#1F2937"
+                        android:textColor="@color/text_primary"
                         android:textSize="11sp"
                         android:textStyle="bold" />
                 </LinearLayout>
@@ -351,7 +351,7 @@
                 android:layout_height="85dp"
                 android:layout_margin="4dp"
                 android:layout_columnWeight="1"
-                android:backgroundTint="#FFFFFF"
+                android:backgroundTint="@color/card_bg_color"
                 app:cardCornerRadius="16dp"
                 app:cardElevation="2dp">
 
@@ -371,7 +371,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
                         android:text="Cabang"
-                        android:textColor="#1F2937"
+                        android:textColor="@color/text_primary"
                         android:textSize="11sp"
                         android:textStyle="bold" />
                 </LinearLayout>
@@ -383,7 +383,7 @@
                 android:layout_height="85dp"
                 android:layout_margin="4dp"
                 android:layout_columnWeight="1"
-                android:backgroundTint="#FFFFFF"
+                android:backgroundTint="@color/card_bg_color"
                 app:cardCornerRadius="16dp"
                 app:cardElevation="2dp">
 
@@ -403,7 +403,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
                         android:text="Report"
-                        android:textColor="#1F2937"
+                        android:textColor="@color/text_primary"
                         android:textSize="11sp"
                         android:textStyle="bold" />
                 </LinearLayout>
@@ -415,7 +415,7 @@
                 android:layout_height="85dp"
                 android:layout_margin="4dp"
                 android:layout_columnWeight="1"
-                android:backgroundTint="#FFFFFF"
+                android:backgroundTint="@color/card_bg_color"
                 app:cardCornerRadius="16dp"
                 app:cardElevation="2dp">
 
@@ -435,7 +435,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
                         android:text="Trolly"
-                        android:textColor="#1F2937"
+                        android:textColor="@color/text_primary"
                         android:textSize="11sp"
                         android:textStyle="bold" />
                 </LinearLayout>
@@ -447,7 +447,7 @@
                 android:layout_height="85dp"
                 android:layout_margin="4dp"
                 android:layout_columnWeight="1"
-                android:backgroundTint="#FFFFFF"
+                android:backgroundTint="@color/card_bg_color"
                 app:cardCornerRadius="16dp"
                 app:cardElevation="2dp">
 
@@ -467,7 +467,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
                         android:text="Quit"
-                        android:textColor="#1F2937"
+                        android:textColor="@color/text_primary"
                         android:textSize="11sp"
                         android:textStyle="bold" />
                 </LinearLayout>

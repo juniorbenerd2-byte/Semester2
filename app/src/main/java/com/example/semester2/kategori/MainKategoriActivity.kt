@@ -24,6 +24,7 @@ import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import com.example.semester2.setting.SettingActivity
 
 class MainKategoriActivity : AppCompatActivity() {
 
@@ -110,6 +111,10 @@ class MainKategoriActivity : AppCompatActivity() {
         }
         findViewById<CardView>(R.id.cardQuit).setOnClickListener {
             finish()
+        }
+        findViewById<CardView>(R.id.cardProfileTop).setOnClickListener {
+            val intent = Intent(this, SettingActivity::class.java)
+            startActivity(intent)
         }
     }
 

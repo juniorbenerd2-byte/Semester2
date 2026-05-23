@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F9FAFB">
+    android:background="@color/bg_color">
 
     <TextView
         android:id="@+id/tvTitleReport"
@@ -13,7 +13,7 @@
         android:layout_marginStart="24dp"
         android:layout_marginTop="24dp"
         android:text="Laporan Penjualan"
-        android:textColor="#1F2937"
+        android:textColor="@color/text_primary"
         android:textSize="24sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
@@ -36,7 +36,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Total Omzet Penjualan"
-            android:textColor="#E0E7FF"
+            android:textColor="@color/label_light_blue"
             android:textSize="14sp" />
 
         <TextView
@@ -45,7 +45,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:text="Rp 1.750.000"
-            android:textColor="#FFFFFF"
+            android:textColor="@color/text_on_accent"
             android:textSize="28sp"
             android:textStyle="bold" />
 
@@ -53,7 +53,7 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_marginVertical="12dp"
-            android:background="#4B6CB7" />
+            android:background="@color/divider_blue" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -70,7 +70,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Total Transaksi"
-                    android:textColor="#E0E7FF"
+                    android:textColor="@color/label_light_blue"
                     android:textSize="12sp" />
 
                 <TextView
@@ -79,7 +79,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
                     android:text="34 Transaksi"
-                    android:textColor="#FFFFFF"
+                    android:textColor="@color/text_on_accent"
                     android:textSize="16sp"
                     android:textStyle="bold" />
             </LinearLayout>
@@ -95,7 +95,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Periode Terkini"
-                    android:textColor="#E0E7FF"
+                    android:textColor="@color/label_light_blue"
                     android:textSize="12sp" />
 
                 <TextView
@@ -104,7 +104,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
                     android:text="23 Mei 2026"
-                    android:textColor="#FFFFFF"
+                    android:textColor="@color/text_on_accent"
                     android:textSize="16sp"
                     android:textStyle="bold" />
             </LinearLayout>
@@ -119,7 +119,7 @@
         android:layout_marginStart="24dp"
         android:layout_marginTop="20dp"
         android:text="Riwayat Laporan"
-        android:textColor="#4B5563"
+        android:textColor="@color/text_secondary"
         android:textSize="16sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
@@ -139,7 +139,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Belum ada riwayat laporan"
-        android:textColor="#9CA3AF"
+        android:textColor="@color/text_hint"
         android:textSize="16sp"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"

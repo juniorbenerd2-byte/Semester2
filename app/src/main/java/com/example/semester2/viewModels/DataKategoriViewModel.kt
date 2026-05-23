@@ -12,11 +12,15 @@ import com.google.firebase.database.ValueEventListener
 class DataKategoriViewModel : ViewModel() {
     private val database = FirebaseDatabase.getInstance()
     private val myRef = database.getReference("kategori")
+    
     val kategoriList = MutableLiveData<ArrayList<ModelKategori>>()
     private var originalKategoriList = ArrayList<ModelKategori>()
+    
     private val searchQuery = MutableLiveData<String?>()
     val isLoading = MutableLiveData<Boolean>()
     val isSearchEmpty = MutableLiveData<Boolean>()
+
+    private var valueEventListener: ValueEventListener? = null
 
     init {
         getData()
@@ -24,8 +28,11 @@ class DataKategoriViewModel : ViewModel() {
 
     fun getData() {
         isLoading.value = true
-        val query = myRef.orderByChild("idKategori").limitToLast(100)
-        query.addValueEventListener(object : ValueEventListener {
+        
+        // Remove existing listener if any
+        valueEventListener?.let { myRef.removeEventListener(it) }
+
+        valueEventListener = object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 isLoading.value = false
                 val list = ArrayList<ModelKategori>()
@@ -39,15 +46,18 @@ class DataKategoriViewModel : ViewModel() {
                 }
                 originalKategoriList.clear()
                 originalKategoriList.addAll(list)
-                kategoriList.value = list
-                isSearchEmpty.value = list.isEmpty()
+                
+                // Re-apply filter if query is active
+                filterList(searchQuery.value)
             }
 
             override fun onCancelled(error: DatabaseError) {
                 isLoading.value = false
                 Log.e("DataKategoriViewModel", "Database error: ${error.message}")
             }
-        })
+        }
+
+        myRef.addValueEventListener(valueEventListener!!)
     }
 
     fun filterList(query: String?) {
@@ -61,6 +71,13 @@ class DataKategoriViewModel : ViewModel() {
             }
             kategoriList.value = ArrayList(filteredList)
             isSearchEmpty.value = filteredList.isEmpty()
+        }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        valueEventListener?.let {
+            myRef.removeEventListener(it)
         }
     }
 }

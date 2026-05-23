@@ -6,7 +6,8 @@
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
     app:cardCornerRadius="12dp"
-    app:cardElevation="2dp">
+    app:cardElevation="2dp"
+    android:backgroundTint="@color/card_bg_color">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -17,7 +18,7 @@
             android:id="@+id/img_icon_pegawai"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:background="#E0F2FE"
+            android:background="@color/icon_bg_blue"
             android:padding="8dp"
             android:src="@drawable/pegawai"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -41,7 +42,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="ID: P001"
-                android:textColor="#757575"
+                android:textColor="@color/text_id"
                 android:textSize="12sp" />
 
             <TextView
@@ -49,7 +50,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Nama Pegawai"
-                android:textColor="#1F2937"
+                android:textColor="@color/text_primary"
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
@@ -58,7 +59,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Role: Kasir"
-                android:textColor="#4B5563"
+                android:textColor="@color/text_secondary"
                 android:textSize="13sp"
                 android:layout_marginTop="2dp" />
 
@@ -80,8 +81,8 @@
                 android:layout_height="wrap_content"
                 android:checked="true"
                 android:text="Aktif"
-                android:textColor="#10B981"
-                android:buttonTint="#10B981"
+                android:textColor="@color/accent_green"
+                android:buttonTint="@color/accent_green"
                 android:textSize="14sp" />
 
         </LinearLayout>

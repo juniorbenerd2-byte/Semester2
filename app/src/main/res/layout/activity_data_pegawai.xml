@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F9FAFB">
+    android:background="@color/bg_color">
 
     <TextView
         android:id="@+id/tvTitlePegawai"
@@ -13,7 +13,7 @@
         android:layout_marginStart="24dp"
         android:layout_marginTop="24dp"
         android:text="Data Pegawai"
-        android:textColor="#1F2937"
+        android:textColor="@color/text_primary"
         android:textSize="24sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
@@ -44,7 +44,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Belum ada data pegawai"
-        android:textColor="#9CA3AF"
+        android:textColor="@color/text_hint"
         android:textSize="16sp"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -61,10 +61,10 @@
         android:clickable="true"
         android:contentDescription="Tambah Pegawai"
         android:focusable="true"
-        app:backgroundTint="#FFc300"
+        app:backgroundTint="@color/accent_yellow"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@android:drawable/ic_input_add"
-        app:tint="#FFFFFF" />
+        app:tint="@color/text_on_accent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
