@@ -13,15 +13,15 @@
         android:theme="@style/Theme.Semester2">
         
         <activity
-            android:name=".kategori.DataKategoriActivity"
+            android:name="com.example.semester2.kategori.DataKategoriActivity"
             android:exported="false" />
             
         <activity
-            android:name=".kategori.KategoriCardActivity"
+            android:name="com.example.semester2.kategori.KategoriCardActivity"
             android:exported="false" />
             
         <activity
-            android:name=".kategori.MainKategoriActivity"
+            android:name="com.example.semester2.kategori.MainKategoriActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -30,7 +30,23 @@
         </activity>
         
         <activity
-            android:name=".kategori.KategoriActivity"
+            android:name="com.example.semester2.kategori.KategoriActivity"
+            android:exported="false" />
+
+        <activity
+            android:name="com.example.semester2.kategori.DataPegawaiActivity"
+            android:exported="false" />
+
+        <activity
+            android:name="com.example.semester2.kategori.PegawaiActivity"
+            android:exported="false" />
+
+        <activity
+            android:name="com.example.semester2.kategori.TrollyActivity"
+            android:exported="false" />
+
+        <activity
+            android:name="com.example.semester2.kategori.ReportActivity"
             android:exported="false" />
             
     </application>

@@ -31,7 +31,7 @@ class KategoriCardActivity : AppCompatActivity() {
 
         // 2. Inisialisasi View
         tvKategori = findViewById(R.id.tv_kategori)
-        val mainView = findViewById<View>(R.id.main_kategori)
+        val mainView = findViewById<View>(R.id.kategori_card)
 
         // 3. Atur Padding otomatis agar tidak tertutup Status Bar/Navigasi
         mainView?.let { view ->
