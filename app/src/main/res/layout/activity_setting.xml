@@ -72,11 +72,12 @@
         </RelativeLayout>
 
         <!-- Form Section -->
-        <androidx.cardview.widget.CardView
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:cardCornerRadius="16dp"
             app:cardElevation="2dp"
+            app:strokeWidth="0dp"
             app:cardBackgroundColor="@color/card_bg_color">
 
             <LinearLayout
@@ -85,11 +86,13 @@
                 android:orientation="vertical"
                 android:padding="20dp">
 
+                <!-- Nama Lengkap -->
                 <com.google.android.material.textfield.TextInputLayout
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Nama Lengkap"
+                    android:textColorHint="@color/text_secondary"
                     app:boxStrokeColor="@color/accent_yellow"
                     app:hintTextColor="@color/accent_yellow"
                     app:startIconDrawable="@drawable/user"
@@ -103,12 +106,14 @@
                         android:textColor="@color/text_primary" />
                 </com.google.android.material.textfield.TextInputLayout>
 
+                <!-- Email (Gmail) -->
                 <com.google.android.material.textfield.TextInputLayout
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     android:hint="Gmail / Email"
+                    android:textColorHint="@color/text_secondary"
                     app:boxStrokeColor="@color/accent_yellow"
                     app:hintTextColor="@color/accent_yellow"
                     app:startIconDrawable="@android:drawable/ic_dialog_email"
@@ -122,12 +127,14 @@
                         android:textColor="@color/text_primary" />
                 </com.google.android.material.textfield.TextInputLayout>
 
+                <!-- Password Baru -->
                 <com.google.android.material.textfield.TextInputLayout
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     android:hint="Password Baru"
+                    android:textColorHint="@color/text_secondary"
                     app:boxStrokeColor="@color/accent_yellow"
                     app:hintTextColor="@color/accent_yellow"
                     app:passwordToggleEnabled="true"
@@ -157,15 +164,16 @@
                     app:cornerRadius="12dp" />
 
             </LinearLayout>
-        </androidx.cardview.widget.CardView>
+        </com.google.android.material.card.MaterialCardView>
 
         <!-- Dark Mode Section -->
-        <androidx.cardview.widget.CardView
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             app:cardCornerRadius="16dp"
             app:cardElevation="2dp"
+            app:strokeWidth="0dp"
             app:cardBackgroundColor="@color/card_bg_color">
 
             <LinearLayout
@@ -196,16 +204,17 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
             </LinearLayout>
-        </androidx.cardview.widget.CardView>
+        </com.google.android.material.card.MaterialCardView>
 
         <!-- Logout Section -->
-        <androidx.cardview.widget.CardView
+        <com.google.android.material.card.MaterialCardView
             android:id="@+id/cardLogout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             app:cardCornerRadius="16dp"
             app:cardElevation="2dp"
+            app:strokeWidth="0dp"
             app:cardBackgroundColor="@color/card_bg_color"
             android:foreground="?attr/selectableItemBackground">
 
@@ -231,16 +240,17 @@
                     android:textSize="16sp"
                     android:textStyle="bold" />
             </LinearLayout>
-        </androidx.cardview.widget.CardView>
+        </com.google.android.material.card.MaterialCardView>
 
         <!-- Delete Account Section -->
-        <androidx.cardview.widget.CardView
+        <com.google.android.material.card.MaterialCardView
             android:id="@+id/cardDeleteAccount"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             app:cardCornerRadius="16dp"
             app:cardElevation="2dp"
+            app:strokeWidth="0dp"
             app:cardBackgroundColor="@color/card_bg_color"
             android:foreground="?attr/selectableItemBackground">
 
@@ -266,7 +276,7 @@
                     android:textSize="16sp"
                     android:textStyle="bold" />
             </LinearLayout>
-        </androidx.cardview.widget.CardView>
+        </com.google.android.material.card.MaterialCardView>
 
     </LinearLayout>
 </ScrollView>
