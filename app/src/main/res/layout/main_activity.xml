@@ -50,7 +50,7 @@
                 android:layout_height="40dp"
                 app:cardCornerRadius="20dp"
                 app:cardElevation="0dp"
-                android:backgroundTint="@color/profile_bg">
+                app:cardBackgroundColor="@color/profile_bg">
 
                 <ImageView
                     android:id="@+id/ProfileTop"
@@ -118,13 +118,14 @@
                         android:layout_height="48dp"
                         app:cardCornerRadius="24dp"
                         app:cardElevation="0dp"
-                        android:backgroundTint="@color/btn_icon_bg">
+                        app:cardBackgroundColor="@color/btn_icon_bg">
 
                         <ImageView
                             android:layout_width="24dp"
                             android:layout_height="24dp"
                             android:layout_gravity="center"
-                            android:src="@drawable/up" />
+                            android:src="@drawable/up"
+                            app:tint="@color/accent_yellow" />
                     </androidx.cardview.widget.CardView>
 
                     <TextView
@@ -151,7 +152,7 @@
                         android:layout_height="48dp"
                         app:cardCornerRadius="24dp"
                         app:cardElevation="0dp"
-                        android:backgroundTint="@color/btn_icon_bg">
+                        app:cardBackgroundColor="@color/btn_icon_bg">
 
                         <ImageView
                             android:layout_width="24dp"
@@ -185,13 +186,14 @@
                         android:layout_height="48dp"
                         app:cardCornerRadius="24dp"
                         app:cardElevation="0dp"
-                        android:backgroundTint="@color/btn_icon_bg">
+                        app:cardBackgroundColor="@color/btn_icon_bg">
 
                         <ImageView
                             android:layout_width="24dp"
                             android:layout_height="24dp"
                             android:layout_gravity="center"
-                            android:src="@drawable/down" />
+                            android:src="@drawable/down"
+                            app:tint="@color/accent_yellow" />
 
                     </androidx.cardview.widget.CardView>
 
@@ -220,7 +222,7 @@
                 android:layout_height="85dp"
                 android:layout_margin="4dp"
                 android:layout_columnWeight="1"
-                android:backgroundTint="@color/card_bg_color"
+                app:cardBackgroundColor="@color/card_bg_color"
                 app:cardCornerRadius="16dp"
                 app:cardElevation="2dp">
 
@@ -254,7 +256,7 @@
                 android:layout_height="85dp"
                 android:layout_margin="4dp"
                 android:layout_columnWeight="1"
-                android:backgroundTint="@color/card_bg_color"
+                app:cardBackgroundColor="@color/card_bg_color"
                 app:cardCornerRadius="16dp"
                 app:cardElevation="2dp">
 
@@ -286,7 +288,7 @@
                 android:layout_height="85dp"
                 android:layout_margin="4dp"
                 android:layout_columnWeight="1"
-                android:backgroundTint="@color/card_bg_color"
+                app:cardBackgroundColor="@color/card_bg_color"
                 app:cardCornerRadius="16dp"
                 app:cardElevation="2dp">
 
@@ -312,14 +314,13 @@
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
-
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardPrinter"
                 android:layout_width="0dp"
                 android:layout_height="85dp"
                 android:layout_margin="4dp"
                 android:layout_columnWeight="1"
-                android:backgroundTint="@color/card_bg_color"
+                app:cardBackgroundColor="@color/card_bg_color"
                 app:cardCornerRadius="16dp"
                 app:cardElevation="2dp">
 
@@ -338,7 +339,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
-                        android:text="Print"
+                        android:text="Printer"
                         android:textColor="@color/text_primary"
                         android:textSize="11sp"
                         android:textStyle="bold" />
@@ -351,7 +352,7 @@
                 android:layout_height="85dp"
                 android:layout_margin="4dp"
                 android:layout_columnWeight="1"
-                android:backgroundTint="@color/card_bg_color"
+                app:cardBackgroundColor="@color/card_bg_color"
                 app:cardCornerRadius="16dp"
                 app:cardElevation="2dp">
 
@@ -383,7 +384,7 @@
                 android:layout_height="85dp"
                 android:layout_margin="4dp"
                 android:layout_columnWeight="1"
-                android:backgroundTint="@color/card_bg_color"
+                app:cardBackgroundColor="@color/card_bg_color"
                 app:cardCornerRadius="16dp"
                 app:cardElevation="2dp">
 
@@ -415,7 +416,7 @@
                 android:layout_height="85dp"
                 android:layout_margin="4dp"
                 android:layout_columnWeight="1"
-                android:backgroundTint="@color/card_bg_color"
+                app:cardBackgroundColor="@color/card_bg_color"
                 app:cardCornerRadius="16dp"
                 app:cardElevation="2dp">
 
@@ -440,7 +441,6 @@
                         android:textStyle="bold" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
-
 
         </GridLayout>
 
