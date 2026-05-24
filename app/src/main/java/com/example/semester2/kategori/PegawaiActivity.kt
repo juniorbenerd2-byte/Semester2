@@ -9,6 +9,7 @@ import android.widget.RadioGroup
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.IntentCompat
 import androidx.core.view.ViewCompat
@@ -16,6 +17,7 @@ import androidx.core.view.WindowInsetsCompat
 import com.example.semester2.R
 import com.example.semester2.model.ModelPegawai
 import com.google.android.material.textfield.TextInputEditText
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 
@@ -36,14 +38,26 @@ class PegawaiActivity : AppCompatActivity() {
     private lateinit var rbPegawaiAktif: RadioButton
     private lateinit var rbPegawaiTidakAktif: RadioButton
     private lateinit var btnSimpanPegawai: Button
+    private lateinit var btnHapusPegawai: Button
 
     private lateinit var database: DatabaseReference
+    private lateinit var auth: FirebaseAuth
+    private var userId: String = ""
     private var editPegawai: ModelPegawai? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_pegawai)
+
+        auth = FirebaseAuth.getInstance()
+        userId = auth.currentUser?.uid ?: ""
+
+        if (userId.isEmpty()) {
+            Toast.makeText(this, "Sesi berakhir", Toast.LENGTH_SHORT).show()
+            finish()
+            return
+        }
 
         initView()
         setupFirebase()
@@ -67,6 +81,7 @@ class PegawaiActivity : AppCompatActivity() {
         rbPegawaiAktif = findViewById(R.id.rbPegawaiAktif)
         rbPegawaiTidakAktif = findViewById(R.id.rbPegawaiTidakAktif)
         btnSimpanPegawai = findViewById(R.id.btnSimpanPegawai)
+        btnHapusPegawai = findViewById(R.id.btnHapusPegawai)
 
         val mainView = findViewById<View>(R.id.main_pegawai)
         ViewCompat.setOnApplyWindowInsetsListener(mainView) { v, insets ->
@@ -79,6 +94,7 @@ class PegawaiActivity : AppCompatActivity() {
     private fun checkEditMode() {
         if (intent.hasExtra("EXTRA_PEGAWAI")) {
             editPegawai = IntentCompat.getParcelableExtra(intent, "EXTRA_PEGAWAI", ModelPegawai::class.java)
+            btnHapusPegawai.visibility = View.VISIBLE
             populateFields()
         }
     }
@@ -112,12 +128,39 @@ class PegawaiActivity : AppCompatActivity() {
     }
 
     private fun setupFirebase() {
-        database = FirebaseDatabase.getInstance().getReference("pegawai")
+        database = FirebaseDatabase.getInstance().getReference("users_data").child(userId).child("pegawai")
     }
 
     private fun setupListeners() {
         btnSimpanPegawai.setOnClickListener {
             simpanPegawai()
+        }
+        btnHapusPegawai.setOnClickListener {
+            showDeleteDialog()
+        }
+    }
+
+    private fun showDeleteDialog() {
+        AlertDialog.Builder(this)
+            .setTitle("Hapus Pegawai")
+            .setMessage("Apakah Anda yakin ingin menghapus pegawai ini?")
+            .setPositiveButton("Hapus") { _, _ ->
+                hapusPegawai()
+            }
+            .setNegativeButton("Batal", null)
+            .show()
+    }
+
+    private fun hapusPegawai() {
+        editPegawai?.idPegawai?.let { id ->
+            database.child(id).removeValue()
+                .addOnSuccessListener {
+                    Toast.makeText(this, "Pegawai berhasil dihapus", Toast.LENGTH_SHORT).show()
+                    finish()
+                }
+                .addOnFailureListener {
+                    Toast.makeText(this, "Gagal menghapus: ${it.message}", Toast.LENGTH_SHORT).show()
+                }
         }
     }
 
@@ -126,16 +169,8 @@ class PegawaiActivity : AppCompatActivity() {
         val alamat = etAlamatPegawai.text.toString().trim()
         val umurStr = etUmurPegawai.text.toString().trim()
 
-        if (nama.isEmpty()) {
-            etNamaPegawai.error = "Nama tidak boleh kosong"
-            return
-        }
-        if (alamat.isEmpty()) {
-            etAlamatPegawai.error = "Alamat tidak boleh kosong"
-            return
-        }
-        if (umurStr.isEmpty()) {
-            etUmurPegawai.error = "Umur tidak boleh kosong"
+        if (nama.isEmpty() || alamat.isEmpty() || umurStr.isEmpty()) {
+            Toast.makeText(this, "Semua field harus diisi", Toast.LENGTH_SHORT).show()
             return
         }
         val umur = umurStr.toIntOrNull()
@@ -177,10 +212,7 @@ class PegawaiActivity : AppCompatActivity() {
         val id = if (isEdit) {
             editPegawai!!.idPegawai!!
         } else {
-            myRef.key ?: run {
-                btnSimpanPegawai.isEnabled = true
-                return
-            }
+            myRef.key ?: ""
         }
 
         val data = ModelPegawai(
@@ -200,7 +232,6 @@ class PegawaiActivity : AppCompatActivity() {
                 finish()
             }
             .addOnFailureListener { error ->
-                Log.e("PegawaiActivity", "Simpan gagal: ${error.message}")
                 btnSimpanPegawai.isEnabled = true
                 Toast.makeText(this, "Gagal menyimpan: ${error.message}", Toast.LENGTH_SHORT).show()
             }

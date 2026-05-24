@@ -9,6 +9,8 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.semester2.R
 import com.example.semester2.kategori.ModelKategori
+import java.text.NumberFormat
+import java.util.Locale
 
 class DataKategoriAdapter(private var list: ArrayList<ModelKategori>) : 
     RecyclerView.Adapter<DataKategoriAdapter.ViewHolder>() {
@@ -26,6 +28,8 @@ class DataKategoriAdapter(private var list: ArrayList<ModelKategori>) :
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val tvIdKategori: TextView = view.findViewById(R.id.tv_id_kategori)
         val tvNamaKategori: TextView = view.findViewById(R.id.tv_kategori)
+        val tvJenisKategori: TextView = view.findViewById(R.id.tv_jenis_kategori)
+        val tvHargaKategori: TextView = view.findViewById(R.id.tv_harga_kategori)
         val cbStatus: CheckBox = view.findViewById(R.id.cb_status)
     }
 
@@ -40,6 +44,9 @@ class DataKategoriAdapter(private var list: ArrayList<ModelKategori>) :
         
         holder.tvIdKategori.text = "ID: ${item.idKategori ?: "-"}"
         holder.tvNamaKategori.text = item.namaKategori ?: "-"
+        holder.tvJenisKategori.text = "Jenis: ${item.jenisKategori ?: "-"}"
+        holder.tvHargaKategori.text = formatRupiah(item.hargaKategori)
+        
         holder.cbStatus.text = item.statusKategori ?: "Tidak Aktif"
         
         val isAktif = item.statusKategori?.equals("Aktif", ignoreCase = true) == true
@@ -61,6 +68,12 @@ class DataKategoriAdapter(private var list: ArrayList<ModelKategori>) :
         holder.itemView.setOnClickListener {
             listener?.onItemClick(item)
         }
+    }
+
+    private fun formatRupiah(number: Long): String {
+        val localeID = Locale("in", "ID")
+        val numberFormat = NumberFormat.getCurrencyInstance(localeID)
+        return numberFormat.format(number).replace("Rp", "Rp ")
     }
 
     override fun getItemCount(): Int = list.size

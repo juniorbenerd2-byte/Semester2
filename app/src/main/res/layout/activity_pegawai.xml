@@ -262,5 +262,18 @@
             android:textStyle="bold"
             app:cornerRadius="12dp" />
 
+        <Button
+            android:id="@+id/btnHapusPegawai"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_marginTop="12dp"
+            android:backgroundTint="#EF4444"
+            android:text="Hapus Pegawai"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:visibility="gone"
+            app:cornerRadius="12dp" />
+
     </LinearLayout>
 </ScrollView>

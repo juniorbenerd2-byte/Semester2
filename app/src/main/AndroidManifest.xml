@@ -16,6 +16,31 @@
         android:theme="@style/Theme.Semester2">
 
         <activity
+            android:name=".auth.LoginActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".auth.RegisterActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".transaksi.TopupActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".transaksi.KirimActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".transaksi.MintaActivity"
+            android:exported="false" />
+
+        <activity
             android:name="com.example.semester2.setting.SettingActivity"
             android:exported="false" />
         
@@ -29,12 +54,7 @@
             
         <activity
             android:name="com.example.semester2.kategori.MainKategoriActivity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:exported="false" />
         
         <activity
             android:name="com.example.semester2.kategori.KategoriActivity"
@@ -54,6 +74,14 @@
 
         <activity
             android:name="com.example.semester2.kategori.ReportActivity"
+            android:exported="false" />
+
+        <activity
+            android:name="com.example.semester2.kategori.DataCabangActivity"
+            android:exported="false" />
+
+        <activity
+            android:name="com.example.semester2.kategori.CabangActivity"
             android:exported="false" />
             
     </application>

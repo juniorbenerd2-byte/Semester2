@@ -4,14 +4,18 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.TextView
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.semester2.R
 import com.example.semester2.adapter.ReportAdapter
 import com.example.semester2.model.ModelReport
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import java.text.NumberFormat
@@ -28,12 +32,23 @@ class ReportActivity : AppCompatActivity() {
     private lateinit var tvKosongReport: TextView
     private lateinit var adapter: ReportAdapter
 
-    private val database = FirebaseDatabase.getInstance()
-    private val myRef = database.getReference("report")
+    private lateinit var database: FirebaseDatabase
+    private lateinit var myRef: DatabaseReference
+    private lateinit var auth: FirebaseAuth
+    private var userId: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_report)
+
+        auth = FirebaseAuth.getInstance()
+        userId = auth.currentUser?.uid ?: ""
+
+        if (userId.isEmpty()) {
+            Toast.makeText(this, "Sesi berakhir", Toast.LENGTH_SHORT).show()
+            finish()
+            return
+        }
 
         tvTotalOmzet = findViewById(R.id.tvTotalOmzet)
         tvTotalTransaksi = findViewById(R.id.tvTotalTransaksi)
@@ -41,7 +56,16 @@ class ReportActivity : AppCompatActivity() {
         rvReport = findViewById(R.id.rvReport)
         tvKosongReport = findViewById(R.id.tvKosongReport)
 
-        adapter = ReportAdapter(ArrayList())
+        database = FirebaseDatabase.getInstance()
+        myRef = database.getReference("users_data").child(userId).child("report")
+
+        // Inisialisasi adapter dengan listener hapus
+        adapter = ReportAdapter(ArrayList(), object : ReportAdapter.OnDeleteClickListener {
+            override fun onDeleteClick(model: ModelReport) {
+                showDeleteDialog(model)
+            }
+        })
+        
         rvReport.layoutManager = LinearLayoutManager(this)
         rvReport.adapter = adapter
 
@@ -50,6 +74,29 @@ class ReportActivity : AppCompatActivity() {
         tvPeriodeReport.text = sdf.format(Date())
 
         fetchReportData()
+    }
+
+    private fun showDeleteDialog(model: ModelReport) {
+        AlertDialog.Builder(this)
+            .setTitle("Hapus Laporan")
+            .setMessage("Apakah Anda yakin ingin menghapus data laporan ini?")
+            .setPositiveButton("Hapus") { _, _ ->
+                hapusReport(model)
+            }
+            .setNegativeButton("Batal", null)
+            .show()
+    }
+
+    private fun hapusReport(model: ModelReport) {
+        model.idReport?.let { id ->
+            myRef.child(id).removeValue()
+                .addOnSuccessListener {
+                    Toast.makeText(this, "Laporan berhasil dihapus", Toast.LENGTH_SHORT).show()
+                }
+                .addOnFailureListener {
+                    Toast.makeText(this, "Gagal menghapus: ${it.message}", Toast.LENGTH_SHORT).show()
+                }
+        }
     }
 
     private fun fetchReportData() {

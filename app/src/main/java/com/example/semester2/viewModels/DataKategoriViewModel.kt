@@ -4,14 +4,17 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.semester2.kategori.ModelKategori
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 
 class DataKategoriViewModel : ViewModel() {
+    private val auth = FirebaseAuth.getInstance()
     private val database = FirebaseDatabase.getInstance()
-    private val myRef = database.getReference("kategori")
+    private val userId = auth.currentUser?.uid ?: ""
+    private val myRef = database.getReference("users_data").child(userId).child("kategori")
     
     val kategoriList = MutableLiveData<ArrayList<ModelKategori>>()
     private var originalKategoriList = ArrayList<ModelKategori>()
@@ -23,7 +26,9 @@ class DataKategoriViewModel : ViewModel() {
     private var valueEventListener: ValueEventListener? = null
 
     init {
-        getData()
+        if (userId.isNotEmpty()) {
+            getData()
+        }
     }
 
     fun getData() {

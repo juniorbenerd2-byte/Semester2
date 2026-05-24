@@ -43,7 +43,7 @@
                 android:layout_height="wrap_content"
                 android:text="ID: K001"
                 android:textColor="@color/text_id"
-                android:textSize="12sp" />
+                android:textSize="10sp" />
 
             <TextView
                 android:id="@+id/tv_kategori"
@@ -52,6 +52,23 @@
                 android:text="Nama Kategori"
                 android:textColor="@color/text_primary"
                 android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_jenis_kategori"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Jenis: -"
+                android:textColor="@color/text_secondary"
+                android:textSize="13sp" />
+
+            <TextView
+                android:id="@+id/tv_harga_kategori"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Rp 0"
+                android:textColor="@color/accent_yellow"
+                android:textSize="14sp"
                 android:textStyle="bold" />
 
         </LinearLayout>

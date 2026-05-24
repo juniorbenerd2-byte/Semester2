@@ -30,7 +30,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
+            android:layout_marginEnd="8dp"
             android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/layout_val_report"
@@ -63,8 +63,9 @@
             android:layout_height="wrap_content"
             android:gravity="end"
             android:orientation="vertical"
+            android:layout_marginEnd="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/btnDeleteReport"
             app:layout_constraintTop_toTopOf="parent">
 
             <TextView
@@ -85,6 +86,17 @@
                 android:textStyle="bold" />
 
         </LinearLayout>
+
+        <ImageView
+            android:id="@+id/btnDeleteReport"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:padding="4dp"
+            android:src="@android:drawable/ic_menu_delete"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="#EF4444" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

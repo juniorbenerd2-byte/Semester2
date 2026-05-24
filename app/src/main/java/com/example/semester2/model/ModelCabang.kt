@@ -8,5 +8,6 @@ data class ModelCabang(
     var idCabang: String? = null,
     var namaCabang: String? = null,
     var alamatCabang: String? = null,
+    var teleponCabang: String? = null,
     var statusCabang: String? = null
 ) : Parcelable

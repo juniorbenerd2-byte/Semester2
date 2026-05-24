@@ -24,6 +24,7 @@ class DetailCabangAdapter(private var list: ArrayList<ModelCabang>) :
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val tvNamaCabang: TextView = view.findViewById(R.id.tv_nama_cabang)
         val tvAlamatCabang: TextView = view.findViewById(R.id.tv_alamat_cabang)
+        val tvTelpCabang: TextView = view.findViewById(R.id.tv_telp_cabang)
         val tvStatusCabang: TextView = view.findViewById(R.id.tv_status_cabang)
     }
 
@@ -37,6 +38,7 @@ class DetailCabangAdapter(private var list: ArrayList<ModelCabang>) :
         val item = list[position]
         holder.tvNamaCabang.text = item.namaCabang ?: "-"
         holder.tvAlamatCabang.text = item.alamatCabang ?: "-"
+        holder.tvTelpCabang.text = "Telp: ${item.teleponCabang ?: "-"}"
         holder.tvStatusCabang.text = item.statusCabang ?: "-"
 
         holder.itemView.setOnClickListener {

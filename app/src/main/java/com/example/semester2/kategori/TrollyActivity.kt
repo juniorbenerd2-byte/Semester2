@@ -11,12 +11,17 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.semester2.R
 import com.example.semester2.adapter.TrollyAdapter
+import com.example.semester2.model.ModelReport
 import com.example.semester2.model.ModelTrolly
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import java.text.NumberFormat
+import java.text.SimpleDateFormat
+import java.util.Date
 import java.util.Locale
 
 class TrollyActivity : AppCompatActivity() {
@@ -28,18 +33,34 @@ class TrollyActivity : AppCompatActivity() {
     private lateinit var btnCheckout: Button
     private lateinit var adapter: TrollyAdapter
 
-    private val database = FirebaseDatabase.getInstance()
-    private val myRef = database.getReference("trolly")
+    private lateinit var database: FirebaseDatabase
+    private lateinit var myRef: DatabaseReference
+    private lateinit var reportRef: DatabaseReference
+    private lateinit var auth: FirebaseAuth
+    private var userId: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_trolly)
+
+        auth = FirebaseAuth.getInstance()
+        userId = auth.currentUser?.uid ?: ""
+
+        if (userId.isEmpty()) {
+            Toast.makeText(this, "Sesi berakhir", Toast.LENGTH_SHORT).show()
+            finish()
+            return
+        }
 
         rvTrolly = findViewById(R.id.rvTrolly)
         tvKosongTrolly = findViewById(R.id.tvKosongTrolly)
         tvTotalItemsCount = findViewById(R.id.tvTotalItemsCount)
         tvTotalHargaTrolly = findViewById(R.id.tvTotalHargaTrolly)
         btnCheckout = findViewById(R.id.btnCheckout)
+
+        database = FirebaseDatabase.getInstance()
+        myRef = database.getReference("users_data").child(userId).child("trolly")
+        reportRef = database.getReference("users_data").child(userId).child("report")
 
         adapter = TrollyAdapter(ArrayList(), object : TrollyAdapter.OnQtyChangeListener {
             override fun onIncrease(item: ModelTrolly) {
@@ -120,13 +141,48 @@ class TrollyActivity : AppCompatActivity() {
     }
 
     private fun checkout() {
-        // Hapus data keranjang belanja saat checkout selesai
-        myRef.removeValue().addOnSuccessListener {
-            Toast.makeText(this, "Checkout Berhasil! Terima kasih.", Toast.LENGTH_LONG).show()
-            finish()
-        }.addOnFailureListener {
-            Toast.makeText(this, "Gagal melakukan checkout: ${it.message}", Toast.LENGTH_SHORT).show()
-        }
+        myRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (snapshot.exists()) {
+                    var totalHargaCheckout = 0L
+                    
+                    for (dataSnapshot in snapshot.children) {
+                        val item = dataSnapshot.getValue(ModelTrolly::class.java)
+                        if (item != null) {
+                            totalHargaCheckout += item.totalHarga ?: 0L
+                        }
+                    }
+
+                    val newReportRef = reportRef.push()
+                    val reportId = newReportRef.key
+                    val sdf = SimpleDateFormat("dd MMMM yyyy, HH:mm", Locale("in", "ID"))
+                    val tanggal = sdf.format(Date())
+
+                    val reportData = ModelReport(
+                        idReport = reportId,
+                        totalPenjualan = totalHargaCheckout,
+                        totalTransaksi = 1,
+                        tanggalReport = tanggal
+                    )
+
+                    newReportRef.setValue(reportData).addOnSuccessListener {
+                        myRef.removeValue().addOnSuccessListener {
+                            Toast.makeText(this@TrollyActivity, "Checkout Berhasil! Total: ${formatRupiah(totalHargaCheckout)}", Toast.LENGTH_LONG).show()
+                            finish()
+                        }
+                    }.addOnFailureListener {
+                        Toast.makeText(this@TrollyActivity, "Gagal menyimpan laporan: ${it.message}", Toast.LENGTH_SHORT).show()
+                    }
+
+                } else {
+                    Toast.makeText(this@TrollyActivity, "Keranjang belanja kosong", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Toast.makeText(this@TrollyActivity, "Error: ${error.message}", Toast.LENGTH_SHORT).show()
+            }
+        })
     }
 
     private fun formatRupiah(number: Long): String {

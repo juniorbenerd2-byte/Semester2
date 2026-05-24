@@ -8,6 +8,8 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.semester2.R
 import com.example.semester2.kategori.ModelKategori
+import java.text.NumberFormat
+import java.util.Locale
 
 class KategoriAdapter(private var list: ArrayList<ModelKategori>) : 
     RecyclerView.Adapter<KategoriAdapter.ViewHolder>() {
@@ -24,6 +26,8 @@ class KategoriAdapter(private var list: ArrayList<ModelKategori>) :
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val tvNama: TextView = view.findViewById(R.id.tv_kategori)
+        val tvJenis: TextView = view.findViewById(R.id.tv_jenis_kategori)
+        val tvHarga: TextView = view.findViewById(R.id.tv_harga_kategori)
         val cbStatus: CheckBox = view.findViewById(R.id.cb_status)
     }
 
@@ -36,6 +40,8 @@ class KategoriAdapter(private var list: ArrayList<ModelKategori>) :
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = list[position]
         holder.tvNama.text = item.namaKategori ?: "-"
+        holder.tvJenis.text = "Jenis: ${item.jenisKategori ?: "-"}"
+        holder.tvHarga.text = formatRupiah(item.hargaKategori)
         holder.cbStatus.text = item.statusKategori ?: "-"
         
         val isAktif = item.statusKategori?.equals("Aktif", ignoreCase = true) == true
@@ -46,6 +52,12 @@ class KategoriAdapter(private var list: ArrayList<ModelKategori>) :
         holder.itemView.setOnClickListener {
             listener?.onItemClick(item)
         }
+    }
+
+    private fun formatRupiah(number: Long): String {
+        val localeID = Locale("in", "ID")
+        val numberFormat = NumberFormat.getCurrencyInstance(localeID)
+        return numberFormat.format(number).replace("Rp", "Rp ")
     }
 
     override fun getItemCount(): Int = list.size
