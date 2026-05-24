@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/main_kategori"
+    android:id="@+id/main_cabang"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/bg_color"
@@ -13,23 +13,15 @@
         android:orientation="vertical"
         android:padding="24dp">
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/tvTitleCabang"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginBottom="32dp">
-
-            <TextView
-                android:id="@+id/tvTitleKategori"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Tambah Kategori"
-                android:textSize="24sp"
-                android:textColor="@color/text_primary"
-                android:textStyle="bold"
-                android:fontFamily="sans-serif-medium"/>
-
-        </LinearLayout>
+            android:text="Tambah Cabang"
+            android:textSize="24sp"
+            android:textColor="@color/text_primary"
+            android:textStyle="bold"
+            android:layout_marginBottom="32dp"/>
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
@@ -47,7 +39,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Nama Kategori :"
+                    android:text="Nama Cabang :"
                     android:textColor="@color/text_primary"
                     android:textStyle="bold"
                     android:layout_marginBottom="8dp"/>
@@ -56,18 +48,14 @@
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:boxCornerRadiusTopStart="8dp"
-                    app:boxCornerRadiusTopEnd="8dp"
-                    app:boxCornerRadiusBottomStart="8dp"
-                    app:boxCornerRadiusBottomEnd="8dp"
                     app:boxStrokeColor="#10B981"
                     app:hintEnabled="false">
 
                     <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etNamaKategori"
+                        android:id="@+id/etNamaCabang"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Masukkan nama kategori"
+                        android:hint="Masukkan nama cabang"
                         android:inputType="textCapWords"
                         android:textColor="@color/text_primary"/>
                 </com.google.android.material.textfield.TextInputLayout>
@@ -75,41 +63,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Jenis Kategori :"
-                    android:textColor="@color/text_primary"
-                    android:textStyle="bold"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginBottom="8dp"/>
-
-                <RadioGroup
-                    android:id="@+id/radioGroupJenisKategori"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <RadioButton
-                        android:id="@+id/rbMakanan"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:buttonTint="#10B981"
-                        android:text="Makanan"
-                        android:textColor="@color/text_primary" />
-
-                    <RadioButton
-                        android:id="@+id/rbMinuman"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Minuman"
-                        android:textColor="@color/text_primary"
-                        android:buttonTint="#10B981"/>
-                </RadioGroup>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Harga Kategori :"
+                    android:text="Alamat Cabang :"
                     android:textColor="@color/text_primary"
                     android:textStyle="bold"
                     android:layout_marginTop="16dp"
@@ -119,50 +73,69 @@
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:boxCornerRadiusTopStart="8dp"
-                    app:boxCornerRadiusTopEnd="8dp"
-                    app:boxCornerRadiusBottomStart="8dp"
-                    app:boxCornerRadiusBottomEnd="8dp"
                     app:boxStrokeColor="#10B981"
                     app:hintEnabled="false">
 
                     <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etHargaKategori"
+                        android:id="@+id/etAlamatCabang"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Masukkan harga"
-                        android:inputType="number"
+                        android:hint="Masukkan alamat lengkap"
+                        android:inputType="textPostalAddress"
                         android:textColor="@color/text_primary"/>
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Status Kategori :"
+                    android:text="Nomor Telepon :"
+                    android:textColor="@color/text_primary"
+                    android:textStyle="bold"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="8dp"/>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:boxStrokeColor="#10B981"
+                    app:hintEnabled="false">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etTelpCabang"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Contoh: 08123456789"
+                        android:inputType="phone"
+                        android:textColor="@color/text_primary"/>
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Status Cabang :"
                     android:textColor="@color/text_primary"
                     android:textStyle="bold"
                     android:layout_marginTop="24dp"
                     android:layout_marginBottom="8dp"/>
 
                 <RadioGroup
-                    android:id="@+id/radioGroupStatus"
+                    android:id="@+id/radioGroupStatusCabang"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
 
-
                     <RadioButton
-                        android:id="@+id/rbAktif"
+                        android:id="@+id/rbAktifCabang"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:buttonTint="#10B981"
-                        android:checked="false"
                         android:text="Aktif"
                         android:textColor="@color/text_primary" />
 
                     <RadioButton
-                        android:id="@+id/rbTidakAktif"
+                        android:id="@+id/rbTidakAktifCabang"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -175,24 +148,24 @@
         </androidx.cardview.widget.CardView>
 
         <Button
-            android:id="@+id/btnSimpan"
+            android:id="@+id/btnSimpanCabang"
             android:layout_width="match_parent"
             android:layout_height="56dp"
             android:layout_marginTop="24dp"
             android:backgroundTint="#FFc300"
-            android:text="Simpan"
+            android:text="Simpan Cabang"
             android:textColor="#FFFFFF"
             android:textSize="16sp"
             android:textStyle="bold"
             app:cornerRadius="12dp" />
 
         <Button
-            android:id="@+id/btnHapusKategori"
+            android:id="@+id/btnHapusCabang"
             android:layout_width="match_parent"
             android:layout_height="56dp"
             android:layout_marginTop="12dp"
             android:backgroundTint="#EF4444"
-            android:text="Hapus Kategori"
+            android:text="Hapus Cabang"
             android:textColor="#FFFFFF"
             android:textSize="16sp"
             android:textStyle="bold"

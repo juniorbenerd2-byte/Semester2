@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="bg_color">#121212</color>
+    <color name="card_bg_color">#1E1E1E</color>
+    <color name="text_primary">#F3F4F6</color>
+    <color name="text_secondary">#9CA3AF</color>
+    <color name="text_hint">#6B7280</color>
+    <color name="border_color">#374151</color>
+
+    <!-- Icon backgrounds (dark variants) -->
+    <color name="icon_bg_pink">#3D2020</color>
+    <color name="icon_bg_blue">#1A2A3A</color>
+    <color name="icon_bg_yellow">#3D3520</color>
+    <color name="icon_bg_green">#1A2D1A</color>
+    <color name="icon_bg_gray">#2A2D30</color>
+
+    <!-- Accent colors (same for light/dark) -->
+    <color name="accent_green">#10B981</color>
+    <color name="accent_yellow">#FFC300</color>
+    <color name="accent_red">#EF4444</color>
+    <color name="accent_blue">#3B82F6</color>
+
+    <!-- Status badge colors -->
+    <color name="status_green">#4CAF50</color>
+    <color name="status_red">#F44336</color>
+
+    <!-- UI element backgrounds -->
+    <color name="profile_bg">#2A2D30</color>
+    <color name="btn_icon_bg">#2A2D30</color>
+    <color name="search_bg_solid">#1E1E1E</color>
+    <color name="search_stroke">#374151</color>
+    <color name="divider_blue">#4B6CB7</color>
+    <color name="label_light_blue">#E0E7FF</color>
+
+    <!-- Text on colored backgrounds (always white) -->
+    <color name="text_on_accent">#FFFFFF</color>
+
+    <!-- Subdued text color for IDs etc -->
+    <color name="text_id">#9E9E9E</color>
+</resources>

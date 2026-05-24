@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/main_kategori"
+    android:id="@+id/main_layanan"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg_color"
+    android:background="#F8F9FA"
     android:fillViewport="true">
 
     <LinearLayout
@@ -20,12 +20,12 @@
             android:layout_marginBottom="32dp">
 
             <TextView
-                android:id="@+id/tvTitleKategori"
+                android:id="@+id/tvTitleLayanan"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Tambah Kategori"
+                android:text="Tambah Layanan"
                 android:textSize="24sp"
-                android:textColor="@color/text_primary"
+                android:textColor="#1F2937"
                 android:textStyle="bold"
                 android:fontFamily="sans-serif-medium"/>
 
@@ -36,7 +36,7 @@
             android:layout_height="wrap_content"
             app:cardCornerRadius="12dp"
             app:cardElevation="0dp"
-            android:backgroundTint="@color/card_bg_color">
+            android:backgroundTint="#FFFFFF">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -47,8 +47,8 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Nama Kategori :"
-                    android:textColor="@color/text_primary"
+                    android:text="Nama Layanan :"
+                    android:textColor="#1F2937"
                     android:textStyle="bold"
                     android:layout_marginBottom="8dp"/>
 
@@ -64,55 +64,21 @@
                     app:hintEnabled="false">
 
                     <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etNamaKategori"
+                        android:id="@+id/etNamaLayanan"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Masukkan nama kategori"
+                        android:hint="Masukkan nama layanan"
                         android:inputType="textCapWords"
-                        android:textColor="@color/text_primary"/>
+                        android:textColor="#1F2937"/>
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Jenis Kategori :"
-                    android:textColor="@color/text_primary"
+                    android:text="Harga Layanan (Rp) :"
+                    android:textColor="#1F2937"
                     android:textStyle="bold"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginBottom="8dp"/>
-
-                <RadioGroup
-                    android:id="@+id/radioGroupJenisKategori"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <RadioButton
-                        android:id="@+id/rbMakanan"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:buttonTint="#10B981"
-                        android:text="Makanan"
-                        android:textColor="@color/text_primary" />
-
-                    <RadioButton
-                        android:id="@+id/rbMinuman"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Minuman"
-                        android:textColor="@color/text_primary"
-                        android:buttonTint="#10B981"/>
-                </RadioGroup>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Harga Kategori :"
-                    android:textColor="@color/text_primary"
-                    android:textStyle="bold"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="20dp"
                     android:layout_marginBottom="8dp"/>
 
                 <com.google.android.material.textfield.TextInputLayout
@@ -127,19 +93,19 @@
                     app:hintEnabled="false">
 
                     <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etHargaKategori"
+                        android:id="@+id/etHargaLayanan"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Masukkan harga"
+                        android:hint="Masukkan harga layanan"
                         android:inputType="number"
-                        android:textColor="@color/text_primary"/>
+                        android:textColor="#1F2937"/>
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Status Kategori :"
-                    android:textColor="@color/text_primary"
+                    android:text="Status Layanan :"
+                    android:textColor="#1F2937"
                     android:textStyle="bold"
                     android:layout_marginTop="24dp"
                     android:layout_marginBottom="8dp"/>
@@ -150,7 +116,6 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
 
-
                     <RadioButton
                         android:id="@+id/rbAktif"
                         android:layout_width="0dp"
@@ -159,7 +124,7 @@
                         android:buttonTint="#10B981"
                         android:checked="false"
                         android:text="Aktif"
-                        android:textColor="@color/text_primary" />
+                        android:textColor="#1F2937" />
 
                     <RadioButton
                         android:id="@+id/rbTidakAktif"
@@ -167,7 +132,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="Tidak Aktif"
-                        android:textColor="@color/text_primary"
+                        android:textColor="#1F2937"
                         android:buttonTint="#EF4444"/>
                 </RadioGroup>
 
@@ -184,19 +149,6 @@
             android:textColor="#FFFFFF"
             android:textSize="16sp"
             android:textStyle="bold"
-            app:cornerRadius="12dp" />
-
-        <Button
-            android:id="@+id/btnHapusKategori"
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:layout_marginTop="12dp"
-            android:backgroundTint="#EF4444"
-            android:text="Hapus Kategori"
-            android:textColor="#FFFFFF"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:visibility="gone"
             app:cornerRadius="12dp" />
 
     </LinearLayout>
