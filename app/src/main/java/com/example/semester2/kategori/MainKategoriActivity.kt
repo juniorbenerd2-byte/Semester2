@@ -37,12 +37,14 @@ class MainKategoriActivity : AppCompatActivity() {
     private var sampleReport: ModelReport? = null
     private var sampleTrolly: ModelTrolly? = null
 
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.main_activity)
 
-        // Initialize Firebase Database reference
+
         database = FirebaseDatabase.getInstance().reference
 
         tvEstimation = findViewById(R.id.tvEstimation)
@@ -118,6 +120,7 @@ class MainKategoriActivity : AppCompatActivity() {
         }
     }
 
+
     private fun fetchEstimationFromFirebase() {
         database.child("summary").child("daily_estimation")
             .addValueEventListener(object : ValueEventListener {
@@ -150,8 +153,7 @@ class MainKategoriActivity : AppCompatActivity() {
         pegawaiRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (!snapshot.exists()) {
-                    val p = ModelPegawai("P001", "Budi Santoso", "Kasir", "Aktif")
-                    pegawaiRef.child("P001").setValue(p)
+
                 } else {
                     for (child in snapshot.children) {
                         samplePegawai = child.getValue(ModelPegawai::class.java)

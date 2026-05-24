@@ -45,17 +45,19 @@ class DataKategoriAdapter(private var list: ArrayList<ModelKategori>) :
         val isAktif = item.statusKategori?.equals("Aktif", ignoreCase = true) == true
         holder.cbStatus.isChecked = isAktif
         
-        // Atur warna teks berdasarkan status
+        // Atur warna teks dan tombol berdasarkan status
         if (isAktif) {
-            holder.cbStatus.setTextColor(Color.parseColor("#4caf50")) // Hijau
+            holder.cbStatus.setTextColor(Color.parseColor("#10B981")) // Hijau sesuai tema
+            holder.cbStatus.buttonTintList = android.content.res.ColorStateList.valueOf(Color.parseColor("#10B981"))
         } else {
-            holder.cbStatus.setTextColor(Color.parseColor("#f44336")) // Merah
+            holder.cbStatus.setTextColor(Color.parseColor("#EF4444")) // Merah
+            holder.cbStatus.buttonTintList = android.content.res.ColorStateList.valueOf(Color.parseColor("#EF4444"))
         }
 
         // Agar klik pada CheckBox tidak mengonsumsi event klik dari item
         holder.cbStatus.isClickable = false
         holder.cbStatus.isFocusable = false
-        
+
         holder.itemView.setOnClickListener {
             listener?.onItemClick(item)
         }

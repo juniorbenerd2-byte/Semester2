@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/kategori_card"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
-    app:cardCornerRadius="8dp"
+    app:cardCornerRadius="12dp"
     app:cardElevation="2dp"
     android:backgroundTint="@color/card_bg_color">
 
@@ -16,10 +15,10 @@
         android:padding="15dp">
 
         <ImageView
-            android:id="@+id/img_icon"
+            android:id="@+id/img_icon_kategori"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:background="@color/icon_bg_pink"
+            android:background="@color/icon_bg_blue"
             android:padding="8dp"
             android:src="@drawable/category"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -27,15 +26,15 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <LinearLayout
-            android:id="@+id/layout_text"
+            android:id="@+id/layout_text_kategori"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
             android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/container_status"
-            app:layout_constraintStart_toEndOf="@id/img_icon"
+            app:layout_constraintEnd_toStartOf="@+id/container_status_kategori"
+            app:layout_constraintStart_toEndOf="@id/img_icon_kategori"
             app:layout_constraintTop_toTopOf="parent">
 
             <TextView
@@ -52,13 +51,13 @@
                 android:layout_height="wrap_content"
                 android:text="Nama Kategori"
                 android:textColor="@color/text_primary"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 android:textStyle="bold" />
 
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/container_status"
+            android:id="@+id/container_status_kategori"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
@@ -73,8 +72,11 @@
                 android:layout_height="wrap_content"
                 android:checked="true"
                 android:text="Aktif"
-                android:textColor="@color/status_green"
-                android:textSize="16sp" />
+                android:textColor="@color/accent_green"
+                android:buttonTint="@color/accent_green"
+                android:textSize="14sp"
+                android:clickable="false"
+                android:focusable="false"/>
 
         </LinearLayout>
 

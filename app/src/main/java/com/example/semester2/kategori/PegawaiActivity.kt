@@ -23,6 +23,11 @@ class PegawaiActivity : AppCompatActivity() {
 
     private lateinit var tvTitlePegawaiForm: TextView
     private lateinit var etNamaPegawai: TextInputEditText
+    private lateinit var etAlamatPegawai: TextInputEditText
+    private lateinit var etUmurPegawai: TextInputEditText
+    private lateinit var radioGroupGender: RadioGroup
+    private lateinit var rbLakiLaki: RadioButton
+    private lateinit var rbPerempuan: RadioButton
     private lateinit var radioGroupRole: RadioGroup
     private lateinit var rbKasir: RadioButton
     private lateinit var rbAdmin: RadioButton
@@ -49,6 +54,11 @@ class PegawaiActivity : AppCompatActivity() {
     private fun initView() {
         tvTitlePegawaiForm = findViewById(R.id.tvTitlePegawaiForm)
         etNamaPegawai = findViewById(R.id.etNamaPegawai)
+        etAlamatPegawai = findViewById(R.id.etAlamatPegawai)
+        etUmurPegawai = findViewById(R.id.etUmurPegawai)
+        radioGroupGender = findViewById(R.id.radioGroupGender)
+        rbLakiLaki = findViewById(R.id.rbLakiLaki)
+        rbPerempuan = findViewById(R.id.rbPerempuan)
         radioGroupRole = findViewById(R.id.radioGroupRole)
         rbKasir = findViewById(R.id.rbKasir)
         rbAdmin = findViewById(R.id.rbAdmin)
@@ -78,6 +88,14 @@ class PegawaiActivity : AppCompatActivity() {
             tvTitlePegawaiForm.text = "Edit Pegawai"
             btnSimpanPegawai.text = "Perbarui"
             etNamaPegawai.setText(pegawai.namaPegawai)
+            etAlamatPegawai.setText(pegawai.alamatPegawai)
+            etUmurPegawai.setText(pegawai.umurPegawai?.toString())
+
+            if (pegawai.genderPegawai?.equals("Laki-laki", ignoreCase = true) == true) {
+                rbLakiLaki.isChecked = true
+            } else if (pegawai.genderPegawai?.equals("Perempuan", ignoreCase = true) == true) {
+                rbPerempuan.isChecked = true
+            }
             
             when (pegawai.rolePegawai?.lowercase()) {
                 "kasir" -> rbKasir.isChecked = true
@@ -105,10 +123,29 @@ class PegawaiActivity : AppCompatActivity() {
 
     private fun simpanPegawai() {
         val nama = etNamaPegawai.text.toString().trim()
+        val alamat = etAlamatPegawai.text.toString().trim()
+        val umurStr = etUmurPegawai.text.toString().trim()
+
         if (nama.isEmpty()) {
-            etNamaPegawai.error = "Nama pegawai tidak boleh kosong"
+            etNamaPegawai.error = "Nama tidak boleh kosong"
             return
         }
+        if (alamat.isEmpty()) {
+            etAlamatPegawai.error = "Alamat tidak boleh kosong"
+            return
+        }
+        if (umurStr.isEmpty()) {
+            etUmurPegawai.error = "Umur tidak boleh kosong"
+            return
+        }
+        val umur = umurStr.toIntOrNull()
+
+        val checkedGenderId = radioGroupGender.checkedRadioButtonId
+        if (checkedGenderId == -1) {
+            Toast.makeText(this, "Pilih gender pegawai", Toast.LENGTH_SHORT).show()
+            return
+        }
+        val gender = if (checkedGenderId == R.id.rbLakiLaki) "Laki-laki" else "Perempuan"
 
         val checkedRoleId = radioGroupRole.checkedRadioButtonId
         if (checkedRoleId == -1) {
@@ -146,11 +183,14 @@ class PegawaiActivity : AppCompatActivity() {
             }
         }
 
-        val data = hashMapOf<String, Any>(
-            "idPegawai" to id,
-            "namaPegawai" to nama,
-            "rolePegawai" to role,
-            "statusPegawai" to status
+        val data = ModelPegawai(
+            idPegawai = id,
+            namaPegawai = nama,
+            rolePegawai = role,
+            statusPegawai = status,
+            alamatPegawai = alamat,
+            umurPegawai = umur,
+            genderPegawai = gender
         )
 
         myRef.setValue(data)

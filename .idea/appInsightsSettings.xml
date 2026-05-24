@@ -7,14 +7,6 @@
         <entry key="Firebase Crashlytics">
           <value>
             <InsightsFilterSettings>
-              <option name="connection">
-                <ConnectionSetting>
-                  <option name="appId" value="com.example.semester2" />
-                  <option name="mobileSdkAppId" value="1:1058466261553:android:85584e4a2cc3c6f4ab8310" />
-                  <option name="projectId" value="project-5c83e78b" />
-                  <option name="projectNumber" value="1058466261553" />
-                </ConnectionSetting>
-              </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />
               <option name="timeIntervalDays" value="THIRTY_DAYS" />
               <option name="visibilityType" value="ALL" />

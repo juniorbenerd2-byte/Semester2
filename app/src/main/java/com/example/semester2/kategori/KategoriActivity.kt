@@ -14,6 +14,7 @@ import androidx.core.content.IntentCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.semester2.R
+import com.example.semester2.model.ModelTrolly
 import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
@@ -133,6 +134,19 @@ class KategoriActivity : AppCompatActivity() {
 
         myRef.setValue(kategoriData)
             .addOnSuccessListener {
+                if (!isEdit) {
+                    val trollyRef = FirebaseDatabase.getInstance().getReference("trolly").push()
+                    val trollyId = trollyRef.key ?: ""
+                    val hargaDefault = 10000L
+                    val trollyData = ModelTrolly(
+                        idTrolly = trollyId,
+                        namaProduk = namaKategori,
+                        jumlah = 1,
+                        harga = hargaDefault,
+                        totalHarga = hargaDefault
+                    )
+                    trollyRef.setValue(trollyData)
+                }
                 val msg = if (isEdit) "Kategori berhasil diperbarui" else "Kategori berhasil disimpan"
                 Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
                 finish() // Menutup activity setelah berhasil simpan

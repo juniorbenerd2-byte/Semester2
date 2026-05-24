@@ -21,7 +21,6 @@
             android:background="@color/icon_bg_blue"
             android:padding="8dp"
             android:src="@drawable/pegawai"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -32,7 +31,6 @@
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
             android:orientation="vertical"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/container_status_pegawai"
             app:layout_constraintStart_toEndOf="@id/img_icon_pegawai"
             app:layout_constraintTop_toTopOf="parent">
@@ -55,6 +53,24 @@
                 android:textStyle="bold" />
 
             <TextView
+                android:id="@+id/tv_detail_pegawai"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Gender, Umur Thn"
+                android:textColor="@color/text_secondary"
+                android:textSize="13sp"
+                android:layout_marginTop="2dp" />
+
+            <TextView
+                android:id="@+id/tv_alamat_pegawai"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Alamat Pegawai"
+                android:textColor="@color/text_secondary"
+                android:textSize="13sp"
+                android:layout_marginTop="2dp" />
+
+            <TextView
                 android:id="@+id/tv_role_pegawai"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -71,7 +87,6 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:orientation="horizontal"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 

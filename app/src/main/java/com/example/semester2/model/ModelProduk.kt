@@ -11,6 +11,7 @@ data class ModelProduk(
     val idkategori: String? = null,
     val idcabang: String? = null,
     val fotoproduk: String? = null,
+    val jenisProduk: String? = null,
     val StokProduk: Int? = 0,
     val TanpaBatas: Boolean? = false,
     val statusProduk: String? = null,

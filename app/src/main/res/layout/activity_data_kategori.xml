@@ -35,6 +35,9 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="8dp"
+        android:paddingHorizontal="12dp"
+        android:paddingBottom="80dp"
+        android:clipToPadding="false"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/searchView"
         tools:listitem="@layout/activity_kategoricard" />
@@ -44,6 +47,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Belum ada data kategori"
+        android:textColor="@color/text_secondary"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -51,19 +55,18 @@
         app:layout_constraintTop_toBottomOf="@id/searchView" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-
         android:id="@+id/fabDataKategori"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="24dp"
         android:layout_marginBottom="24dp"
         android:clickable="true"
-        android:contentDescription="@string/app_name"
+        android:contentDescription="Tambah Kategori"
         android:focusable="true"
         app:backgroundTint="#FFc300"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@android:drawable/ic_input_add"
+        app:srcCompat="@drawable/plus"
         app:tint="#FFFFFF" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

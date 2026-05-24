@@ -51,7 +51,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
-                android:text="Rp 18.000 / pcs"
+                android:text="Rp 0 / pcs"
                 android:textColor="@color/text_secondary"
                 android:textSize="12sp" />
 
@@ -60,7 +60,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"
-                android:text="Rp 72.000"
+                android:text="Rp 0"
                 android:textColor="@color/accent_green"
                 android:textSize="15sp"
                 android:textStyle="bold" />
@@ -79,12 +79,10 @@
 
             <ImageButton
                 android:id="@+id/btn_minus_trolly"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
                 android:contentDescription="Kurangi"
-                android:src="@android:drawable/ic_media_previous"
-                app:tint="@color/text_secondary" />
+                android:src="@drawable/back" />
 
             <TextView
                 android:id="@+id/tv_qty_trolly"
@@ -98,12 +96,10 @@
 
             <ImageButton
                 android:id="@+id/btn_plus_trolly"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
                 android:contentDescription="Tambah"
-                android:src="@android:drawable/ic_media_next"
-                app:tint="@color/accent_green" />
+                android:src="@drawable/next" />
 
         </LinearLayout>
 
