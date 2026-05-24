@@ -21,7 +21,7 @@
             android:layout_marginBottom="32dp">
 
             <ImageButton
-                android:id="@+id/btnBackSetting"
+                android:id="@+id/btnBackAccount"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
@@ -33,7 +33,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:text="Edit Akun"
+                android:text="Pengaturan Akun"
                 android:textColor="@color/text_primary"
                 android:textSize="24sp"
                 android:textStyle="bold"
@@ -77,7 +77,7 @@
             android:layout_height="wrap_content"
             app:cardCornerRadius="16dp"
             app:cardElevation="2dp"
-            android:backgroundTint="@color/card_bg_color">
+            app:cardBackgroundColor="@color/card_bg_color">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -85,7 +85,6 @@
                 android:orientation="vertical"
                 android:padding="20dp">
 
-                <!-- Nama Lengkap -->
                 <com.google.android.material.textfield.TextInputLayout
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
@@ -93,7 +92,8 @@
                     android:hint="Nama Lengkap"
                     app:boxStrokeColor="@color/accent_yellow"
                     app:hintTextColor="@color/accent_yellow"
-                    app:startIconDrawable="@drawable/user">
+                    app:startIconDrawable="@drawable/user"
+                    app:startIconTint="@color/text_secondary">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etEditNama"
@@ -103,7 +103,6 @@
                         android:textColor="@color/text_primary" />
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <!-- Email (Gmail) -->
                 <com.google.android.material.textfield.TextInputLayout
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
@@ -112,7 +111,8 @@
                     android:hint="Gmail / Email"
                     app:boxStrokeColor="@color/accent_yellow"
                     app:hintTextColor="@color/accent_yellow"
-                    app:startIconDrawable="@android:drawable/ic_dialog_email">
+                    app:startIconDrawable="@android:drawable/ic_dialog_email"
+                    app:startIconTint="@color/text_secondary">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etEditEmail"
@@ -122,17 +122,18 @@
                         android:textColor="@color/text_primary" />
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <!-- Password Baru -->
                 <com.google.android.material.textfield.TextInputLayout
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    android:hint="Password Baru"
+                    android:hint="Password Baru (Kosongkan jika tidak diubah)"
                     app:boxStrokeColor="@color/accent_yellow"
                     app:hintTextColor="@color/accent_yellow"
                     app:passwordToggleEnabled="true"
-                    app:startIconDrawable="@android:drawable/ic_lock_idle_lock">
+                    app:passwordToggleTint="@color/text_secondary"
+                    app:startIconDrawable="@android:drawable/ic_lock_idle_lock"
+                    app:startIconTint="@color/text_secondary">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etEditPassword"
@@ -158,15 +159,54 @@
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
-        <!-- Logout Section -->
+        <!-- Theme Mode Section -->
         <androidx.cardview.widget.CardView
-            android:id="@+id/cardLogout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             app:cardCornerRadius="16dp"
             app:cardElevation="2dp"
-            android:backgroundTint="@color/card_bg_color"
+            app:cardBackgroundColor="@color/card_bg_color">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:padding="16dp">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/home"
+                    app:tint="@color/text_primary" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:layout_weight="1"
+                    android:text="Mode Gelap"
+                    android:textColor="@color/text_primary"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <com.google.android.material.materialswitch.MaterialSwitch
+                    android:id="@+id/switchDarkMode"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Logout Section -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardLogout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="2dp"
+            app:cardBackgroundColor="@color/card_bg_color"
             android:foreground="?attr/selectableItemBackground">
 
             <LinearLayout
@@ -180,13 +220,48 @@
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:src="@drawable/quit"
-                    app:tint="@color/accent_red" />
+                    app:tint="@color/text_primary" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="12dp"
                     android:text="Keluar dari Akun"
+                    android:textColor="@color/text_primary"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Delete Account Section -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardDeleteAccount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="2dp"
+            app:cardBackgroundColor="@color/card_bg_color"
+            android:foreground="?attr/selectableItemBackground">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:padding="16dp">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@android:drawable/ic_menu_delete"
+                    app:tint="@color/accent_red" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:text="Hapus Akun Permanen"
                     android:textColor="@color/accent_red"
                     android:textSize="16sp"
                     android:textStyle="bold" />

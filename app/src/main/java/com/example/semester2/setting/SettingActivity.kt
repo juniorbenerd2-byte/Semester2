@@ -1,16 +1,20 @@
 package com.example.semester2.setting
 
+import android.app.AlertDialog
 import android.app.ProgressDialog
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.cardview.widget.CardView
 import com.example.semester2.R
 import com.example.semester2.auth.LoginActivity
 import com.google.android.material.imageview.ShapeableImageView
+import com.google.android.material.materialswitch.MaterialSwitch
 import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
@@ -27,6 +31,7 @@ class SettingActivity : AppCompatActivity() {
     private lateinit var etEditEmail: TextInputEditText
     private lateinit var etEditPassword: TextInputEditText
     private lateinit var ivProfilePicture: ShapeableImageView
+    private lateinit var switchDarkMode: MaterialSwitch
     private lateinit var loadingDialog: ProgressDialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,12 +42,13 @@ class SettingActivity : AppCompatActivity() {
         database = FirebaseDatabase.getInstance()
         
         loadingDialog = ProgressDialog(this).apply {
-            setMessage("Menyimpan perubahan...")
+            setMessage("Memproses...")
             setCancelable(false)
         }
 
         initView()
         loadUserData()
+        setupThemeSwitch()
         setupListeners()
     }
 
@@ -51,6 +57,31 @@ class SettingActivity : AppCompatActivity() {
         etEditEmail = findViewById(R.id.etEditEmail)
         etEditPassword = findViewById(R.id.etEditPassword)
         ivProfilePicture = findViewById(R.id.ivProfilePicture)
+        switchDarkMode = findViewById(R.id.switchDarkMode)
+    }
+
+    private fun setupThemeSwitch() {
+        val sharedPreferences = getSharedPreferences("theme_prefs", Context.MODE_PRIVATE)
+        val isDarkMode = sharedPreferences.getBoolean("is_dark_mode", false)
+        
+        // Set posisi switch sesuai preferensi tersimpan
+        switchDarkMode.isChecked = isDarkMode
+
+        switchDarkMode.setOnCheckedChangeListener { _, isChecked ->
+            // Simpan pilihan ke SharedPreferences
+            sharedPreferences.edit().putBoolean("is_dark_mode", isChecked).apply()
+
+            // Terapkan Tema
+            if (isChecked) {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+            } else {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+            }
+            
+            // Recreate activity untuk menerapkan perubahan secara visual (opsional jika sudah otomatis)
+            // finish()
+            // startActivity(intent)
+        }
     }
 
     private fun loadUserData() {
@@ -67,7 +98,7 @@ class SettingActivity : AppCompatActivity() {
                         }
                     }
                     override fun onCancelled(error: DatabaseError) {
-                        Toast.makeText(this@SettingActivity, "Gagal memuat data: ${error.message}", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@SettingActivity, "Gagal memuat data", Toast.LENGTH_SHORT).show()
                     }
                 })
         }
@@ -89,9 +120,50 @@ class SettingActivity : AppCompatActivity() {
         findViewById<Button>(R.id.btnSimpanPerubahan).setOnClickListener {
             simpanPerubahan()
         }
+
+        findViewById<CardView>(R.id.cardDeleteAccount).setOnClickListener {
+            tampilkanDialogKonfirmasiHapus()
+        }
         
         findViewById<com.google.android.material.floatingactionbutton.FloatingActionButton>(R.id.fabEditPhoto).setOnClickListener {
             Toast.makeText(this, "Fitur ganti foto akan segera hadir", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun tampilkanDialogKonfirmasiHapus() {
+        AlertDialog.Builder(this)
+            .setTitle("Hapus Akun")
+            .setMessage("Apakah Anda yakin ingin menghapus akun ini secara permanen? Data Anda tidak bisa dikembalikan.")
+            .setPositiveButton("Hapus") { _, _ ->
+                hapusAkun()
+            }
+            .setNegativeButton("Batal", null)
+            .show()
+    }
+
+    private fun hapusAkun() {
+        val user = auth.currentUser ?: return
+        loadingDialog.setMessage("Menghapus akun...")
+        loadingDialog.show()
+
+        database.getReference("users").child(user.uid).removeValue().addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                user.delete().addOnCompleteListener { authTask ->
+                    loadingDialog.dismiss()
+                    if (authTask.isSuccessful) {
+                        Toast.makeText(this, "Akun berhasil dihapus", Toast.LENGTH_SHORT).show()
+                        val intent = Intent(this, LoginActivity::class.java)
+                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                        startActivity(intent)
+                        finish()
+                    } else {
+                        Toast.makeText(this, "Gagal: ${authTask.exception?.message}", Toast.LENGTH_LONG).show()
+                    }
+                }
+            } else {
+                loadingDialog.dismiss()
+                Toast.makeText(this, "Gagal hapus data", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
@@ -106,13 +178,12 @@ class SettingActivity : AppCompatActivity() {
             return
         }
 
+        loadingDialog.setMessage("Menyimpan perubahan...")
         loadingDialog.show()
 
-        // 1. Update Database (Nama)
         database.getReference("users").child(user.uid).child("nama").setValue(newNama)
             .addOnCompleteListener { dbTask ->
                 if (dbTask.isSuccessful) {
-                    // Jika email berubah, update auth
                     if (newEmail != user.email) {
                         user.updateEmail(newEmail).addOnCompleteListener { emailTask ->
                             if (emailTask.isSuccessful) {
@@ -120,7 +191,7 @@ class SettingActivity : AppCompatActivity() {
                                 checkPasswordUpdate(newPassword)
                             } else {
                                 loadingDialog.dismiss()
-                                Toast.makeText(this, "Gagal update email: ${emailTask.exception?.message}", Toast.LENGTH_LONG).show()
+                                Toast.makeText(this, "Gagal update email", Toast.LENGTH_SHORT).show()
                             }
                         }
                     } else {
@@ -128,31 +199,26 @@ class SettingActivity : AppCompatActivity() {
                     }
                 } else {
                     loadingDialog.dismiss()
-                    Toast.makeText(this, "Gagal update data di database", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Gagal update database", Toast.LENGTH_SHORT).show()
                 }
             }
     }
 
     private fun checkPasswordUpdate(newPassword: String) {
         val user = auth.currentUser
-        if (newPassword.isNotEmpty()) {
-            if (newPassword.length < 6) {
+        if (newPassword.isNotEmpty() && newPassword.length >= 6) {
+            user?.updatePassword(newPassword)?.addOnCompleteListener { passTask ->
                 loadingDialog.dismiss()
-                Toast.makeText(this, "Password minimal 6 karakter. Nama berhasil diperbarui.", Toast.LENGTH_SHORT).show()
-            } else {
-                user?.updatePassword(newPassword)?.addOnCompleteListener { passTask ->
-                    loadingDialog.dismiss()
-                    if (passTask.isSuccessful) {
-                        Toast.makeText(this, "Profil dan Password berhasil diperbarui", Toast.LENGTH_SHORT).show()
-                        finish()
-                    } else {
-                        Toast.makeText(this, "Gagal update password: ${passTask.exception?.message}", Toast.LENGTH_LONG).show()
-                    }
+                if (passTask.isSuccessful) {
+                    Toast.makeText(this, "Data diperbarui", Toast.LENGTH_SHORT).show()
+                    finish()
+                } else {
+                    Toast.makeText(this, "Gagal update password", Toast.LENGTH_SHORT).show()
                 }
             }
         } else {
             loadingDialog.dismiss()
-            Toast.makeText(this, "Profil berhasil diperbarui", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Data diperbarui", Toast.LENGTH_SHORT).show()
             finish()
         }
     }

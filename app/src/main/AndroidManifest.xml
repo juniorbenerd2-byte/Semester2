@@ -41,7 +41,7 @@
             android:exported="false" />
 
         <activity
-            android:name="com.example.semester2.setting.AccountActivity"
+            android:name="com.example.semester2.setting.SettingActivity"
             android:exported="false" />
         
         <activity

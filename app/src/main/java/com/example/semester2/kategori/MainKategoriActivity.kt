@@ -12,10 +12,6 @@ import androidx.cardview.widget.CardView
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.semester2.R
-import com.example.semester2.model.ModelCabang
-import com.example.semester2.model.ModelPegawai
-import com.example.semester2.model.ModelReport
-import com.example.semester2.model.ModelTrolly
 import com.example.semester2.transaksi.KirimActivity
 import com.example.semester2.transaksi.MintaActivity
 import com.example.semester2.transaksi.TopupActivity
@@ -29,7 +25,7 @@ import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
-import com.example.semester2.setting.AccountActivity
+import com.example.semester2.setting.SettingActivity
 
 class MainKategoriActivity : AppCompatActivity() {
 
@@ -37,12 +33,6 @@ class MainKategoriActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
     private lateinit var tvEstimation: TextView
     private lateinit var tvGreeting: TextView
-
-    // Variables to store dynamic data fetched from Firebase Database
-    private var samplePegawai: ModelPegawai? = null
-    private var sampleCabang: ModelCabang? = null
-    private var sampleReport: ModelReport? = null
-    private var sampleTrolly: ModelTrolly? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,7 +55,6 @@ class MainKategoriActivity : AppCompatActivity() {
         setupHeader()
         setupClickListeners()
         fetchUserData()
-        initializeAndFetchFirebaseData()
     }
 
     private fun setupHeader() {
@@ -91,7 +80,6 @@ class MainKategoriActivity : AppCompatActivity() {
     }
 
     private fun setupClickListeners() {
-        // Transaksi Buttons
         findViewById<LinearLayout>(R.id.btnTransaksi).setOnClickListener {
             startActivity(Intent(this, KirimActivity::class.java))
         }
@@ -102,18 +90,11 @@ class MainKategoriActivity : AppCompatActivity() {
             startActivity(Intent(this, MintaActivity::class.java))
         }
 
-        // Card Menu Buttons
         findViewById<CardView>(R.id.cardPegawai).setOnClickListener {
             startActivity(Intent(this, DataPegawaiActivity::class.java))
         }
-        findViewById<CardView>(R.id.cardLayanan).setOnClickListener {
-            showToast("Fitur Layanan segera hadir")
-        }
         findViewById<CardView>(R.id.cardKategori).setOnClickListener {
             startActivity(Intent(this, DataKategoriActivity::class.java))
-        }
-        findViewById<CardView>(R.id.cardPrinter).setOnClickListener {
-            showToast("Fitur Printer segera hadir")
         }
         findViewById<CardView>(R.id.cardCabang).setOnClickListener {
             startActivity(Intent(this, DataCabangActivity::class.java))
@@ -125,13 +106,10 @@ class MainKategoriActivity : AppCompatActivity() {
             startActivity(Intent(this, TrollyActivity::class.java))
         }
         
+        // Panggil SettingActivity
         findViewById<CardView>(R.id.cardProfileTop).setOnClickListener {
-            startActivity(Intent(this, AccountActivity::class.java))
+            startActivity(Intent(this, SettingActivity::class.java))
         }
-    }
-
-    private fun initializeAndFetchFirebaseData() {
-        // ... (data initialization logic remains similar but updated for UI consistency)
     }
 
     private fun formatRupiah(number: Long): String {

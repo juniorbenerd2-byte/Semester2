@@ -1,5 +1,6 @@
 package com.example.semester2.setting
 
+import android.app.AlertDialog
 import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
@@ -37,7 +38,7 @@ class AccountActivity : AppCompatActivity() {
         database = FirebaseDatabase.getInstance()
         
         loadingDialog = ProgressDialog(this).apply {
-            setMessage("Menyimpan perubahan...")
+            setMessage("Memproses...")
             setCancelable(false)
         }
 
@@ -67,14 +68,14 @@ class AccountActivity : AppCompatActivity() {
                         }
                     }
                     override fun onCancelled(error: DatabaseError) {
-                        Toast.makeText(this@AccountActivity, "Gagal memuat data: ${error.message}", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@AccountActivity, "Gagal memuat data", Toast.LENGTH_SHORT).show()
                     }
                 })
         }
     }
 
     private fun setupListeners() {
-        findViewById<ImageButton>(R.id.btnBackSetting).setOnClickListener {
+        findViewById<ImageButton>(R.id.btnBackAccount).setOnClickListener {
             finish()
         }
 
@@ -89,10 +90,55 @@ class AccountActivity : AppCompatActivity() {
         findViewById<Button>(R.id.btnSimpanPerubahan).setOnClickListener {
             simpanPerubahan()
         }
+
+        findViewById<CardView>(R.id.cardDeleteAccount).setOnClickListener {
+            tampilkanDialogKonfirmasiHapus()
+        }
         
         findViewById<com.google.android.material.floatingactionbutton.FloatingActionButton>(R.id.fabEditPhoto).setOnClickListener {
             Toast.makeText(this, "Fitur ganti foto akan segera hadir", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    private fun tampilkanDialogKonfirmasiHapus() {
+        AlertDialog.Builder(this)
+            .setTitle("Hapus Akun")
+            .setMessage("Apakah Anda yakin ingin menghapus akun ini secara permanen? Semua data saldo dan profil akan hilang.")
+            .setPositiveButton("Hapus") { _, _ ->
+                hapusAkunPermanen()
+            }
+            .setNegativeButton("Batal", null)
+            .show()
+    }
+
+    private fun hapusAkunPermanen() {
+        val user = auth.currentUser ?: return
+        loadingDialog.setMessage("Menghapus akun...")
+        loadingDialog.show()
+
+        // 1. Hapus data dari Realtime Database
+        database.getReference("users").child(user.uid).removeValue()
+            .addOnCompleteListener { dbTask ->
+                if (dbTask.isSuccessful) {
+                    // 2. Hapus akun dari Firebase Auth
+                    user.delete().addOnCompleteListener { authTask ->
+                        loadingDialog.dismiss()
+                        if (authTask.isSuccessful) {
+                            Toast.makeText(this, "Akun berhasil dihapus", Toast.LENGTH_SHORT).show()
+                            val intent = Intent(this, LoginActivity::class.java)
+                            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                            startActivity(intent)
+                            finish()
+                        } else {
+                            // Seringkali gagal jika user sudah lama login (membutuhkan re-authentication)
+                            Toast.makeText(this, "Gagal: ${authTask.exception?.message}. Silakan logout dan login kembali untuk menghapus akun.", Toast.LENGTH_LONG).show()
+                        }
+                    }
+                } else {
+                    loadingDialog.dismiss()
+                    Toast.makeText(this, "Gagal menghapus data database", Toast.LENGTH_SHORT).show()
+                }
+            }
     }
 
     private fun simpanPerubahan() {
@@ -106,13 +152,12 @@ class AccountActivity : AppCompatActivity() {
             return
         }
 
+        loadingDialog.setMessage("Menyimpan perubahan...")
         loadingDialog.show()
 
-        // 1. Update Database (Nama)
         database.getReference("users").child(user.uid).child("nama").setValue(newNama)
             .addOnCompleteListener { dbTask ->
                 if (dbTask.isSuccessful) {
-                    // Jika email berubah, update auth
                     if (newEmail != user.email) {
                         user.updateEmail(newEmail).addOnCompleteListener { emailTask ->
                             if (emailTask.isSuccessful) {
@@ -128,31 +173,26 @@ class AccountActivity : AppCompatActivity() {
                     }
                 } else {
                     loadingDialog.dismiss()
-                    Toast.makeText(this, "Gagal update data di database", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Gagal update database", Toast.LENGTH_SHORT).show()
                 }
             }
     }
 
     private fun checkPasswordUpdate(newPassword: String) {
         val user = auth.currentUser
-        if (newPassword.isNotEmpty()) {
-            if (newPassword.length < 6) {
+        if (newPassword.isNotEmpty() && newPassword.length >= 6) {
+            user?.updatePassword(newPassword)?.addOnCompleteListener { passTask ->
                 loadingDialog.dismiss()
-                Toast.makeText(this, "Password minimal 6 karakter. Nama berhasil diperbarui.", Toast.LENGTH_SHORT).show()
-            } else {
-                user?.updatePassword(newPassword)?.addOnCompleteListener { passTask ->
-                    loadingDialog.dismiss()
-                    if (passTask.isSuccessful) {
-                        Toast.makeText(this, "Profil dan Password berhasil diperbarui", Toast.LENGTH_SHORT).show()
-                        finish()
-                    } else {
-                        Toast.makeText(this, "Gagal update password: ${passTask.exception?.message}", Toast.LENGTH_LONG).show()
-                    }
+                if (passTask.isSuccessful) {
+                    Toast.makeText(this, "Data berhasil diperbarui", Toast.LENGTH_SHORT).show()
+                    finish()
+                } else {
+                    Toast.makeText(this, "Gagal update password: ${passTask.exception?.message}", Toast.LENGTH_LONG).show()
                 }
             }
         } else {
             loadingDialog.dismiss()
-            Toast.makeText(this, "Profil berhasil diperbarui", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Data berhasil diperbarui", Toast.LENGTH_SHORT).show()
             finish()
         }
     }
