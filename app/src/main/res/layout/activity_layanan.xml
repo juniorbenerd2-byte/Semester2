@@ -4,7 +4,7 @@
     android:id="@+id/main_layanan"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F8F9FA"
+    android:background="@color/bg_color"
     android:fillViewport="true">
 
     <LinearLayout
@@ -16,39 +16,47 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
             android:layout_marginBottom="32dp">
+
+            <ImageButton
+                android:id="@+id/btnBackLayanan"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@android:drawable/ic_menu_revert"
+                app:tint="@color/text_primary" />
 
             <TextView
                 android:id="@+id/tvTitleLayanan"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
                 android:text="Tambah Layanan"
                 android:textSize="24sp"
-                android:textColor="#1F2937"
-                android:textStyle="bold"
-                android:fontFamily="sans-serif-medium"/>
-
+                android:textColor="@color/text_primary"
+                android:textStyle="bold" />
         </LinearLayout>
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:cardCornerRadius="12dp"
-            app:cardElevation="0dp"
-            android:backgroundTint="#FFFFFF">
+            app:cardElevation="2dp"
+            app:cardBackgroundColor="@color/card_bg_color">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="15dp">
+                android:padding="20dp">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Nama Layanan :"
-                    android:textColor="#1F2937"
+                    android:text="Nama Layanan"
+                    android:textColor="@color/text_secondary"
                     android:textStyle="bold"
                     android:layout_marginBottom="8dp"/>
 
@@ -56,27 +64,23 @@
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:boxCornerRadiusTopStart="8dp"
-                    app:boxCornerRadiusTopEnd="8dp"
-                    app:boxCornerRadiusBottomStart="8dp"
-                    app:boxCornerRadiusBottomEnd="8dp"
-                    app:boxStrokeColor="#10B981"
+                    app:boxStrokeColor="@color/accent_yellow"
                     app:hintEnabled="false">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etNamaLayanan"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Masukkan nama layanan"
+                        android:hint="Contoh: Cuci Kilat"
                         android:inputType="textCapWords"
-                        android:textColor="#1F2937"/>
+                        android:textColor="@color/text_primary"/>
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Harga Layanan (Rp) :"
-                    android:textColor="#1F2937"
+                    android:text="Harga (Rp)"
+                    android:textColor="@color/text_secondary"
                     android:textStyle="bold"
                     android:layout_marginTop="20dp"
                     android:layout_marginBottom="8dp"/>
@@ -85,27 +89,23 @@
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:boxCornerRadiusTopStart="8dp"
-                    app:boxCornerRadiusTopEnd="8dp"
-                    app:boxCornerRadiusBottomStart="8dp"
-                    app:boxCornerRadiusBottomEnd="8dp"
-                    app:boxStrokeColor="#10B981"
+                    app:boxStrokeColor="@color/accent_yellow"
                     app:hintEnabled="false">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etHargaLayanan"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Masukkan harga layanan"
+                        android:hint="0"
                         android:inputType="number"
-                        android:textColor="#1F2937"/>
+                        android:textColor="@color/text_primary"/>
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Status Layanan :"
-                    android:textColor="#1F2937"
+                    android:text="Status Layanan"
+                    android:textColor="@color/text_secondary"
                     android:textStyle="bold"
                     android:layout_marginTop="24dp"
                     android:layout_marginBottom="8dp"/>
@@ -121,10 +121,9 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:buttonTint="#10B981"
-                        android:checked="false"
+                        android:buttonTint="@color/accent_green"
                         android:text="Aktif"
-                        android:textColor="#1F2937" />
+                        android:textColor="@color/text_primary" />
 
                     <RadioButton
                         android:id="@+id/rbTidakAktif"
@@ -132,8 +131,8 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="Tidak Aktif"
-                        android:textColor="#1F2937"
-                        android:buttonTint="#EF4444"/>
+                        android:textColor="@color/text_primary"
+                        android:buttonTint="@color/accent_red"/>
                 </RadioGroup>
 
             </LinearLayout>
@@ -144,12 +143,24 @@
             android:layout_width="match_parent"
             android:layout_height="56dp"
             android:layout_marginTop="24dp"
-            android:backgroundTint="#FFc300"
-            android:text="Simpan"
-            android:textColor="#FFFFFF"
+            android:backgroundTint="@color/accent_yellow"
+            android:text="Simpan Layanan"
+            android:textColor="@color/white"
             android:textSize="16sp"
             android:textStyle="bold"
             app:cornerRadius="12dp" />
+
+        <Button
+            android:id="@+id/btnHapusLayanan"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_marginTop="12dp"
+            android:backgroundTint="@android:color/transparent"
+            android:text="Hapus Layanan"
+            android:textColor="@color/accent_red"
+            android:textSize="16sp"
+            android:visibility="gone"
+            style="@style/Widget.MaterialComponents.Button.TextButton"/>
 
     </LinearLayout>
 </ScrollView>

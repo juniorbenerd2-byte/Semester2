@@ -93,9 +93,20 @@ class MainKategoriActivity : AppCompatActivity() {
         findViewById<CardView>(R.id.cardPegawai).setOnClickListener {
             startActivity(Intent(this, DataPegawaiActivity::class.java))
         }
+        
+        findViewById<CardView>(R.id.cardLayanan).setOnClickListener {
+            startActivity(Intent(this, DataLayananActivity::class.java))
+        }
+
         findViewById<CardView>(R.id.cardKategori).setOnClickListener {
             startActivity(Intent(this, DataKategoriActivity::class.java))
         }
+
+        // Membuka PrinterActivity
+        findViewById<CardView>(R.id.cardPrinter).setOnClickListener {
+            startActivity(Intent(this, PrinterActivity::class.java))
+        }
+
         findViewById<CardView>(R.id.cardCabang).setOnClickListener {
             startActivity(Intent(this, DataCabangActivity::class.java))
         }
@@ -106,7 +117,6 @@ class MainKategoriActivity : AppCompatActivity() {
             startActivity(Intent(this, TrollyActivity::class.java))
         }
         
-        // Panggil SettingActivity
         findViewById<CardView>(R.id.cardProfileTop).setOnClickListener {
             startActivity(Intent(this, SettingActivity::class.java))
         }

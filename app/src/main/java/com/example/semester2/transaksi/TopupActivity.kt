@@ -1,6 +1,8 @@
 package com.example.semester2.transaksi
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.Toast
@@ -12,6 +14,8 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import java.text.NumberFormat
+import java.util.Locale
 
 class TopupActivity : AppCompatActivity() {
 
@@ -29,16 +33,59 @@ class TopupActivity : AppCompatActivity() {
 
         findViewById<ImageButton>(R.id.btnBackTopup).setOnClickListener { finish() }
 
+        // Tambahkan TextWatcher untuk format ribuan (titik)
+        setupAmountFormatter()
+
         btnConfirm.setOnClickListener {
-            val amountStr = etAmount.text.toString()
-            if (amountStr.isEmpty()) {
+            // Ambil teks, hilangkan semua titik sebelum dikonversi ke angka
+            val cleanString = etAmount.text.toString().replace(".", "")
+            
+            if (cleanString.isEmpty()) {
                 etAmount.error = "Masukkan nominal"
                 return@setOnClickListener
             }
 
-            val amount = amountStr.toLong()
-            processTopup(amount)
+            try {
+                val amount = cleanString.toLong()
+                processTopup(amount)
+            } catch (e: Exception) {
+                Toast.makeText(this, "Format angka tidak valid", Toast.LENGTH_SHORT).show()
+            }
         }
+    }
+
+    private fun setupAmountFormatter() {
+        etAmount.addTextChangedListener(object : TextWatcher {
+            private var current = ""
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+
+            override fun afterTextChanged(s: Editable?) {
+                if (s.toString() != current) {
+                    etAmount.removeTextChangedListener(this)
+
+                    // Hilangkan titik yang ada agar tidak double
+                    val cleanString = s.toString().replace(".", "")
+
+                    if (cleanString.isNotEmpty()) {
+                        try {
+                            val parsed = cleanString.toLong()
+                            // Format ke gaya Indonesia (pemisah ribuan menggunakan titik)
+                            val formatted = NumberFormat.getNumberInstance(Locale("id", "ID")).format(parsed)
+
+                            current = formatted
+                            etAmount.setText(formatted)
+                            etAmount.setSelection(formatted.length) // Pindahkan kursor ke akhir
+                        } catch (e: Exception) {
+                            // Jika bukan angka, abaikan
+                        }
+                    }
+
+                    etAmount.addTextChangedListener(this)
+                }
+            }
+        })
     }
 
     private fun processTopup(amount: Long) {

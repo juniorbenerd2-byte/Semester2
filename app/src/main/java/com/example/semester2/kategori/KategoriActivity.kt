@@ -1,6 +1,8 @@
 package com.example.semester2.kategori
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.View
 import android.widget.Button
@@ -20,6 +22,8 @@ import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
+import java.text.NumberFormat
+import java.util.Locale
 
 class KategoriActivity : AppCompatActivity() {
 
@@ -56,6 +60,7 @@ class KategoriActivity : AppCompatActivity() {
 
         initView()
         setupFirebase()
+        setupHargaFormatter()
         setupListeners()
         checkEditMode()
     }
@@ -81,6 +86,36 @@ class KategoriActivity : AppCompatActivity() {
         }
     }
 
+    private fun setupHargaFormatter() {
+        etHargaKategori.addTextChangedListener(object : TextWatcher {
+            private var current = ""
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+
+            override fun afterTextChanged(s: Editable?) {
+                if (s.toString() != current) {
+                    etHargaKategori.removeTextChangedListener(this)
+
+                    val cleanString = s.toString().replace(".", "")
+
+                    if (cleanString.isNotEmpty()) {
+                        try {
+                            val parsed = cleanString.toLong()
+                            val formatted = NumberFormat.getNumberInstance(Locale("id", "ID")).format(parsed)
+
+                            current = formatted
+                            etHargaKategori.setText(formatted)
+                            etHargaKategori.setSelection(formatted.length)
+                        } catch (e: Exception) {}
+                    }
+
+                    etHargaKategori.addTextChangedListener(this)
+                }
+            }
+        })
+    }
+
     private fun checkEditMode() {
         if (intent.hasExtra("EXTRA_KATEGORI")) {
             editKategori = IntentCompat.getParcelableExtra(intent, "EXTRA_KATEGORI", ModelKategori::class.java)
@@ -101,7 +136,8 @@ class KategoriActivity : AppCompatActivity() {
                 rbMinuman.isChecked = true
             }
 
-            etHargaKategori.setText(kategori.hargaKategori.toString())
+            val formattedHarga = NumberFormat.getNumberInstance(Locale("id", "ID")).format(kategori.hargaKategori)
+            etHargaKategori.setText(formattedHarga)
             
             if (kategori.statusKategori?.equals("Aktif", ignoreCase = true) == true) {
                 rbAktif.isChecked = true
@@ -150,7 +186,7 @@ class KategoriActivity : AppCompatActivity() {
 
     private fun simpanKategori() {
         val namaKategori = etNamaKategori.text.toString().trim()
-        val hargaString = etHargaKategori.text.toString().trim()
+        val hargaString = etHargaKategori.text.toString().replace(".", "").trim()
 
         val selectedJenisId = radioGroupJenisKategori.checkedRadioButtonId
         if (selectedJenisId == -1) {
