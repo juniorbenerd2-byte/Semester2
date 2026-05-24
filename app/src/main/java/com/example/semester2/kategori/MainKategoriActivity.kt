@@ -29,7 +29,7 @@ import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
-import com.example.semester2.setting.SettingActivity
+import com.example.semester2.setting.AccountActivity
 
 class MainKategoriActivity : AppCompatActivity() {
 
@@ -126,7 +126,7 @@ class MainKategoriActivity : AppCompatActivity() {
         }
         
         findViewById<CardView>(R.id.cardProfileTop).setOnClickListener {
-            startActivity(Intent(this, SettingActivity::class.java))
+            startActivity(Intent(this, AccountActivity::class.java))
         }
     }
 

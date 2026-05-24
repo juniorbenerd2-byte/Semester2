@@ -25,7 +25,9 @@ class KategoriActivity : AppCompatActivity() {
 
     private lateinit var tvTitleKategori: TextView
     private lateinit var etNamaKategori: TextInputEditText
-    private lateinit var etJenisKategori: TextInputEditText
+    private lateinit var radioGroupJenisKategori: RadioGroup
+    private lateinit var rbMakanan: RadioButton
+    private lateinit var rbMinuman: RadioButton
     private lateinit var etHargaKategori: TextInputEditText
     private lateinit var radioGroupStatus: RadioGroup
     private lateinit var rbAktif: RadioButton
@@ -61,7 +63,9 @@ class KategoriActivity : AppCompatActivity() {
     private fun initView() {
         tvTitleKategori = findViewById(R.id.tvTitleKategori)
         etNamaKategori = findViewById(R.id.etNamaKategori)
-        etJenisKategori = findViewById(R.id.etJenisKategori)
+        radioGroupJenisKategori = findViewById(R.id.radioGroupJenisKategori)
+        rbMakanan = findViewById(R.id.rbMakanan)
+        rbMinuman = findViewById(R.id.rbMinuman)
         etHargaKategori = findViewById(R.id.etHargaKategori)
         radioGroupStatus = findViewById(R.id.radioGroupStatus)
         rbAktif = findViewById(R.id.rbAktif)
@@ -72,7 +76,7 @@ class KategoriActivity : AppCompatActivity() {
         val mainView = findViewById<View>(R.id.main_kategori)
         ViewCompat.setOnApplyWindowInsetsListener(mainView) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            v.setPadding(systemBars.left, systemBars.top, systemBars.left, systemBars.bottom)
             insets
         }
     }
@@ -90,7 +94,13 @@ class KategoriActivity : AppCompatActivity() {
             tvTitleKategori.text = "Edit Kategori"
             btnSimpan.text = "Perbarui"
             etNamaKategori.setText(kategori.namaKategori)
-            etJenisKategori.setText(kategori.jenisKategori)
+            
+            if (kategori.jenisKategori?.equals("Makanan", ignoreCase = true) == true) {
+                rbMakanan.isChecked = true
+            } else if (kategori.jenisKategori?.equals("Minuman", ignoreCase = true) == true) {
+                rbMinuman.isChecked = true
+            }
+
             etHargaKategori.setText(kategori.hargaKategori.toString())
             
             if (kategori.statusKategori?.equals("Aktif", ignoreCase = true) == true) {
@@ -140,22 +150,28 @@ class KategoriActivity : AppCompatActivity() {
 
     private fun simpanKategori() {
         val namaKategori = etNamaKategori.text.toString().trim()
-        val jenisKategori = etJenisKategori.text.toString().trim()
         val hargaString = etHargaKategori.text.toString().trim()
 
-        if (namaKategori.isEmpty() || jenisKategori.isEmpty() || hargaString.isEmpty()) {
-            Toast.makeText(this, "Semua field harus diisi", Toast.LENGTH_SHORT).show()
+        val selectedJenisId = radioGroupJenisKategori.checkedRadioButtonId
+        if (selectedJenisId == -1) {
+            Toast.makeText(this, "Pilih jenis kategori", Toast.LENGTH_SHORT).show()
+            return
+        }
+        val jenisKategori = if (selectedJenisId == R.id.rbMakanan) "Makanan" else "Minuman"
+
+        if (namaKategori.isEmpty() || hargaString.isEmpty()) {
+            Toast.makeText(this, "Nama dan Harga harus diisi", Toast.LENGTH_SHORT).show()
             return
         }
 
         val hargaKategori = hargaString.toLongOrNull() ?: 0L
-        val selectedId = radioGroupStatus.checkedRadioButtonId
-        if (selectedId == -1) {
+        val selectedStatusId = radioGroupStatus.checkedRadioButtonId
+        if (selectedStatusId == -1) {
             Toast.makeText(this, "Pilih status kategori", Toast.LENGTH_SHORT).show()
             return
         }
 
-        val status = if (selectedId == R.id.rbAktif) "Aktif" else "Tidak Aktif"
+        val status = if (selectedStatusId == R.id.rbAktif) "Aktif" else "Tidak Aktif"
         btnSimpan.isEnabled = false
 
         val isEdit = editKategori != null
