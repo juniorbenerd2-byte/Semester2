@@ -158,8 +158,7 @@
                             android:layout_width="24dp"
                             android:layout_height="24dp"
                             android:layout_gravity="center"
-                            android:src="@drawable/plus"
-                            app:tint="@color/accent_yellow" />
+                            android:src="@drawable/plus" />
                     </androidx.cardview.widget.CardView>
 
 
