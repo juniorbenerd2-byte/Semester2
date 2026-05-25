@@ -10,9 +10,12 @@ import android.widget.Button
 import android.widget.ImageButton
 import android.widget.RadioGroup
 import android.widget.Toast
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.cardview.widget.CardView
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import com.example.semester2.R
 import com.example.semester2.auth.LoginActivity
 import com.google.android.material.imageview.ShapeableImageView
@@ -37,6 +40,9 @@ class SettingActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        
+        // 1. Aktifkan Edge-to-Edge untuk menghilangkan celah kosong di atas
+        enableEdgeToEdge()
         setContentView(R.layout.activity_setting)
 
         auth = FirebaseAuth.getInstance()
@@ -48,6 +54,7 @@ class SettingActivity : AppCompatActivity() {
         }
 
         initView()
+        handleInsets() // 2. Atur padding agar tidak tertutup status bar
         loadUserData()
         setupThemeSelection()
         setupListeners()
@@ -59,6 +66,16 @@ class SettingActivity : AppCompatActivity() {
         etEditPassword = findViewById(R.id.etEditPassword)
         ivProfilePicture = findViewById(R.id.ivProfilePicture)
         rgTheme = findViewById(R.id.rgTheme)
+    }
+
+    private fun handleInsets() {
+        // Memberikan padding otomatis pada root layout agar tidak terpotong status bar
+        val mainLayout = findViewById<View>(android.R.id.content)
+        ViewCompat.setOnApplyWindowInsetsListener(mainLayout) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            insets
+        }
     }
 
     private fun setupThemeSelection() {
@@ -78,8 +95,13 @@ class SettingActivity : AppCompatActivity() {
                     R.id.rbDark -> AppCompatDelegate.MODE_NIGHT_YES
                     else -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
                 }
-                sharedPreferences.edit().putInt("theme_mode", mode).apply()
-                AppCompatDelegate.setDefaultNightMode(mode)
+                
+                if (mode != savedTheme) {
+                    sharedPreferences.edit().putInt("theme_mode", mode).apply()
+                    AppCompatDelegate.setDefaultNightMode(mode)
+                    // Recreate untuk memastikan semua warna Container (Pink) di-reset
+                    recreate()
+                }
             }
         }
     }

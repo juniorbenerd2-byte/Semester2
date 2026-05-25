@@ -1,6 +1,35 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-
+    <!-- Base application theme for Dark Mode. -->
     <style name="Base.Theme.Semester2" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Warna Utama -->
+        <item name="colorPrimary">@color/accent_yellow</item>
+        <item name="colorOnPrimary">@color/black</item>
+        <item name="colorPrimaryContainer">@color/icon_bg_yellow</item>
+        <item name="colorOnPrimaryContainer">@color/white</item>
 
+        <!-- Warna Sekunder -->
+        <item name="colorSecondary">@color/accent_green</item>
+        <item name="colorOnSecondary">@color/white</item>
+        <item name="colorSecondaryContainer">@color/icon_bg_green</item>
+        <item name="colorOnSecondaryContainer">@color/white</item>
+
+        <!-- Warna Tersier (Fix Pink di Dark Mode) -->
+        <item name="colorTertiary">@color/accent_blue</item>
+        <item name="colorOnTertiary">@color/white</item>
+        <item name="colorTertiaryContainer">@color/icon_bg_blue</item>
+        <item name="colorOnTertiaryContainer">@color/white</item>
+
+        <!-- Background dan Surface -->
+        <item name="android:windowBackground">@color/bg_color</item>
+        <item name="colorSurface">@color/bg_color</item>
+        <item name="colorOnSurface">@color/text_primary</item>
+        <item name="colorSurfaceVariant">@color/card_bg_color</item>
+        <item name="colorOnSurfaceVariant">@color/text_secondary</item>
+        <item name="colorOutline">@color/border_color</item>
+
+        <!-- Status Bar Transparan -->
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
     </style>
 </resources>

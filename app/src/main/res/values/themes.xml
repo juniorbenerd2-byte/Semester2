@@ -1,8 +1,26 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
     <style name="Base.Theme.Semester2" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <!-- Warna Utama -->
+        <item name="colorPrimary">@color/accent_yellow</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorPrimaryContainer">@color/icon_bg_yellow</item>
+        <item name="colorOnPrimaryContainer">@color/text_primary</item>
+
+        <!-- Slot Warna Lain agar tidak default pink -->
+        <item name="colorSecondary">@color/accent_green</item>
+        <item name="colorSecondaryContainer">@color/icon_bg_green</item>
+        <item name="colorTertiary">@color/accent_blue</item>
+        <item name="colorTertiaryContainer">@color/icon_bg_blue</item>
+
+        <!-- Background & Surface (Menggunakan Card background agar tidak pink) -->
+        <item name="android:windowBackground">@color/bg_color</item>
+        <item name="colorSurface">@color/card_bg_color</item>
+        <item name="colorOnSurface">@color/text_primary</item>
+        <item name="colorSurfaceVariant">@color/card_bg_color</item>
+        
+        <!-- Status Bar Fix -->
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar">true</item>
     </style>
 
     <style name="Theme.Semester2" parent="Base.Theme.Semester2" />

@@ -1,7 +1,6 @@
 package com.example.semester2.kategori
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
@@ -18,6 +17,7 @@ import com.google.firebase.database.*
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 
 class ReportActivity : AppCompatActivity() {
 
@@ -31,9 +31,10 @@ class ReportActivity : AppCompatActivity() {
 
     private lateinit var myRef: DatabaseReference
     private var userId: String = ""
-    
-    // Konsisten menggunakan Locale "in" (Indonesia) sesuai TrollyActivity
     private val dateFormatter = SimpleDateFormat("dd MMMM yyyy", Locale("in", "ID"))
+    
+    private var allReportList = ArrayList<ModelReport>()
+    private var currentFilterDate: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,10 +45,13 @@ class ReportActivity : AppCompatActivity() {
 
         initView()
         setupFirebase()
-        setupToggle()
         
-        // Tampilkan data Hari Ini secara default
-        loadReportByDate(Date())
+        // Default filter: Hari ini
+        currentFilterDate = dateFormatter.format(Date())
+        tvPeriodeReport.text = currentFilterDate
+        
+        setupToggle()
+        fetchInitialData()
     }
 
     private fun initView() {
@@ -72,6 +76,20 @@ class ReportActivity : AppCompatActivity() {
         myRef = FirebaseDatabase.getInstance().getReference("users_data").child(userId).child("report")
     }
 
+    private fun fetchInitialData() {
+        myRef.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                allReportList.clear()
+                for (ds in snapshot.children) {
+                    val report = ds.getValue(ModelReport::class.java)
+                    if (report != null) allReportList.add(report)
+                }
+                filterData(currentFilterDate)
+            }
+            override fun onCancelled(error: DatabaseError) {}
+        })
+    }
+
     private fun setupToggle() {
         toggleGroup.addOnButtonCheckedListener { _, checkedId, isChecked ->
             if (isChecked) {
@@ -79,66 +97,52 @@ class ReportActivity : AppCompatActivity() {
                 if (checkedId == R.id.btnKemarin) {
                     calendar.add(Calendar.DATE, -1)
                 }
-                loadReportByDate(calendar.time)
+                // Memperbaiki BUG: menggunakan variabel 'calendar' yang benar
+                currentFilterDate = dateFormatter.format(calendar.time)
+                tvPeriodeReport.text = currentFilterDate
+                filterData(currentFilterDate)
             }
         }
     }
 
-    private fun loadReportByDate(date: Date) {
-        val targetDateString = dateFormatter.format(date)
-        tvPeriodeReport.text = targetDateString
+    private fun filterData(dateStr: String) {
+        val filteredList = ArrayList<ModelReport>()
+        var omzet = 0L
+        var trans = 0
 
-        myRef.addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                val list = ArrayList<ModelReport>()
-                var totalOmzet = 0L
-                var totalTrans = 0
-
-                for (data in snapshot.children) {
-                    val report = data.getValue(ModelReport::class.java)
-                    // PENTING: Karena di database ada Jam (12 Mei 2024, 14:00), 
-                    // kita gunakan 'contains' untuk mencocokkan tanggal saja.
-                    if (report != null && report.tanggalReport?.contains(targetDateString) == true) {
-                        list.add(report)
-                        totalOmzet += report.totalPenjualan ?: 0L
-                        totalTrans += report.totalTransaksi ?: 0
-                    }
-                }
-                updateUI(list, totalOmzet, totalTrans)
+        for (report in allReportList) {
+            // Menggunakan contains agar data dengan format "Tanggal, Jam" tetap terbaca
+            if (report.tanggalReport?.contains(dateStr) == true) {
+                filteredList.add(report)
+                omzet += report.totalPenjualan ?: 0L
+                trans += report.totalTransaksi ?: 0
             }
-            override fun onCancelled(error: DatabaseError) {
-                Log.e("ReportActivity", "Error: ${error.message}")
-            }
-        })
-    }
+        }
 
-    private fun updateUI(list: ArrayList<ModelReport>, omzet: Long, trans: Int) {
         tvTotalOmzet.text = formatRupiah(omzet)
         tvTotalTransaksi.text = "$trans Transaksi"
-        
-        if (list.isEmpty()) {
+
+        if (filteredList.isEmpty()) {
             tvKosongReport.visibility = View.VISIBLE
             rvReport.visibility = View.GONE
         } else {
             tvKosongReport.visibility = View.GONE
             rvReport.visibility = View.VISIBLE
-            adapter.updateData(list)
+            adapter.updateData(filteredList)
         }
     }
 
     private fun showDeleteDialog(model: ModelReport) {
         AlertDialog.Builder(this)
-            .setTitle("Hapus Laporan")
-            .setMessage("Hapus data laporan?")
+            .setTitle("Hapus")
+            .setMessage("Hapus laporan ini?")
             .setPositiveButton("Hapus") { _, _ ->
                 model.idReport?.let { myRef.child(it).removeValue() }
-            }
-            .setNegativeButton("Batal", null)
-            .show()
+            }.setNegativeButton("Batal", null).show()
     }
 
     private fun formatRupiah(number: Long): String {
-        return NumberFormat.getCurrencyInstance(Locale("in", "ID"))
+        return NumberFormat.getCurrencyInstance(Locale("id", "ID"))
             .format(number).replace("Rp", "Rp ").replace(",00", "")
     }
 }

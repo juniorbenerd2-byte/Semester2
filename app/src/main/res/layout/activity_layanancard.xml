@@ -5,38 +5,47 @@
     android:id="@+id/layanan_card"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="8dp"
+    android:layout_marginHorizontal="12dp"
+    android:layout_marginVertical="6dp"
     app:cardBackgroundColor="@color/card_bg_color"
-    app:cardCornerRadius="8dp"
-    app:cardElevation="2dp">
+    app:cardCornerRadius="16dp"
+    app:cardElevation="3dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="15dp">
+        android:padding="16dp">
 
-        <ImageView
-            android:id="@+id/img_icon"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:background="@color/icon_bg_green"
-            android:padding="8dp"
-            android:src="@drawable/service"
-            app:tint="@color/accent_green"
+        <androidx.cardview.widget.CardView
+            android:id="@+id/icon_container"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            app:cardCornerRadius="24dp"
+            app:cardElevation="0dp"
+            app:cardBackgroundColor="@color/icon_bg_green"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/img_icon"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="center"
+                android:src="@drawable/service"
+                app:tint="@color/accent_green" />
+        </androidx.cardview.widget.CardView>
 
         <LinearLayout
             android:id="@+id/layout_text"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
+            android:layout_marginEnd="12dp"
             android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/container_status"
-            app:layout_constraintStart_toEndOf="@id/img_icon"
+            app:layout_constraintStart_toEndOf="@id/icon_container"
             app:layout_constraintTop_toTopOf="parent">
 
             <TextView
@@ -44,8 +53,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="ID: L001"
-                android:textColor="@color/text_secondary"
-                android:textSize="12sp" />
+                android:textColor="@color/text_id"
+                android:textSize="11sp" />
 
             <TextView
                 android:id="@+id/tv_layanan"
@@ -53,7 +62,7 @@
                 android:layout_height="wrap_content"
                 android:text="Nama Layanan"
                 android:textColor="@color/text_primary"
-                android:textSize="18sp"
+                android:textSize="17sp"
                 android:textStyle="bold" />
 
             <TextView
@@ -73,7 +82,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:orientation="horizontal"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -84,8 +92,10 @@
                 android:layout_height="wrap_content"
                 android:checked="true"
                 android:text="Aktif"
+                android:buttonTint="@color/status_green"
                 android:textColor="@color/status_green"
-                android:textSize="16sp" />
+                android:textSize="14sp"
+                android:textStyle="bold" />
 
         </LinearLayout>
 
