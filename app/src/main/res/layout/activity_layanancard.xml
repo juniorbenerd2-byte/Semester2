@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
+    app:cardBackgroundColor="@color/card_bg_color"
     app:cardCornerRadius="8dp"
     app:cardElevation="2dp">
 
@@ -18,9 +19,10 @@
             android:id="@+id/img_icon"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:background="#E8F5E9"
+            android:background="@color/icon_bg_green"
             android:padding="8dp"
             android:src="@drawable/service"
+            app:tint="@color/accent_green"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -42,7 +44,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="ID: L001"
-                android:textColor="#757575"
+                android:textColor="@color/text_secondary"
                 android:textSize="12sp" />
 
             <TextView
@@ -50,7 +52,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Nama Layanan"
-                android:textColor="#333333"
+                android:textColor="@color/text_primary"
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
@@ -60,7 +62,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
                 android:text="Rp 0"
-                android:textColor="#10B981"
+                android:textColor="@color/accent_green"
                 android:textSize="14sp"
                 android:textStyle="bold" />
 
@@ -82,7 +84,7 @@
                 android:layout_height="wrap_content"
                 android:checked="true"
                 android:text="Aktif"
-                android:textColor="#4caf50"
+                android:textColor="@color/status_green"
                 android:textSize="16sp" />
 
         </LinearLayout>
