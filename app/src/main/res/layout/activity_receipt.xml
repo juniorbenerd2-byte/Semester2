@@ -57,17 +57,25 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="TOKO JUNIOR"
-                    android:textSize="22sp"
+                    android:textSize="24sp"
                     android:textStyle="bold"
                     android:textColor="@color/text_primary" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Layanan: 823-2568-0356"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="14sp"
+                    android:layout_marginTop="2dp" />
 
                 <TextView
                     android:id="@+id/tvReceiptDate"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="12/05/2024 19:30"
-                    android:textColor="@color/text_secondary"
-                    android:textSize="14sp"
+                    android:textColor="@color/text_hint"
+                    android:textSize="12sp"
                     android:layout_marginTop="4dp" />
 
                 <View
@@ -76,6 +84,15 @@
                     android:background="@color/border_color"
                     android:layout_marginTop="20dp"
                     android:layout_marginBottom="16dp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="RINCIAN PESANAN"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/text_hint"
+                    android:layout_marginBottom="8dp" />
 
                 <!-- Container untuk daftar barang secara dinamis -->
                 <LinearLayout
@@ -100,7 +117,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="TOTAL PEMBAYARAN"
+                        android:text="TOTAL BAYAR"
                         android:textStyle="bold"
                         android:textColor="@color/text_primary"
                         android:textSize="16sp" />
@@ -115,12 +132,37 @@
                         android:textSize="18sp" />
                 </LinearLayout>
 
+                <View
+                    android:layout_width="40dp"
+                    android:layout_height="1dp"
+                    android:background="@color/text_hint"
+                    android:layout_marginTop="32dp" />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Terima Kasih Atas Kunjungan Anda"
+                    android:text="KETERANGAN"
+                    android:textStyle="bold"
+                    android:textSize="11sp"
+                    android:textColor="@color/text_secondary"
+                    android:layout_marginTop="8dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Barang yang sudah dibeli tidak dapat ditukar atau dikembalikan. Harap simpan struk ini sebagai bukti pembayaran yang sah."
                     android:textColor="@color/text_hint"
-                    android:layout_marginTop="40dp"
+                    android:layout_marginTop="8dp"
+                    android:gravity="center"
+                    android:textSize="10sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="*** TERIMA KASIH ***"
+                    android:textStyle="bold"
+                    android:textColor="@color/text_secondary"
+                    android:layout_marginTop="24dp"
                     android:textSize="12sp" />
 
             </LinearLayout>

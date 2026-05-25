@@ -7,13 +7,14 @@ class MainApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         
-        // Load theme from SharedPreferences and apply
         val sharedPreferences = getSharedPreferences("theme_prefs", MODE_PRIVATE)
-        val isDarkMode = sharedPreferences.getBoolean("is_dark_mode", false)
-        if (isDarkMode) {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-        } else {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+        // 0 = Ikuti Sistem (Default), 1 = Terang, 2 = Gelap
+        val themeMode = sharedPreferences.getInt("theme_mode", 0)
+        
+        when (themeMode) {
+            1 -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+            2 -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+            else -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
         }
     }
 }
