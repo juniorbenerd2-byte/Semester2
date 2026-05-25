@@ -19,7 +19,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- Summary Card with Blue Gradient -->
     <LinearLayout
         android:id="@+id/cardReportSummary"
         android:layout_width="match_parent"
@@ -44,7 +43,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:text="Rp 1.750.000"
+            android:text="Rp 0"
             android:textColor="@color/text_on_accent"
             android:textSize="28sp"
             android:textStyle="bold" />
@@ -78,7 +77,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
-                    android:text="34 Transaksi"
+                    android:text="0 Transaksi"
                     android:textColor="@color/text_on_accent"
                     android:textSize="16sp"
                     android:textStyle="bold" />
@@ -103,35 +102,72 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
-                    android:text="23 Mei 2026"
+                    android:text="-"
                     android:textColor="@color/text_on_accent"
                     android:textSize="16sp"
                     android:textStyle="bold" />
             </LinearLayout>
         </LinearLayout>
-
     </LinearLayout>
 
+    <!-- Header Section for History Label and Toggle -->
     <TextView
         android:id="@+id/tvLabelHistory"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
-        android:layout_marginTop="20dp"
         android:text="Riwayat Laporan"
         android:textColor="@color/text_secondary"
         android:textSize="16sp"
         android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/toggleGroupReport"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/cardReportSummary" />
+        app:layout_constraintTop_toTopOf="@+id/toggleGroupReport" />
+
+    <com.google.android.material.button.MaterialButtonToggleGroup
+        android:id="@+id/toggleGroupReport"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="24dp"
+        app:checkedButton="@+id/btnHariIni"
+        app:singleSelection="true"
+        app:selectionRequired="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/cardReportSummary">
+
+        <Button
+            android:id="@+id/btnHariIni"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:paddingHorizontal="12dp"
+            android:text="Hari Ini"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            android:textSize="10sp" />
+
+        <Button
+            android:id="@+id/btnKemarin"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:paddingHorizontal="12dp"
+            android:text="Kemarin"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            android:textSize="10sp" />
+    </com.google.android.material.button.MaterialButtonToggleGroup>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvReport"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="12dp"
+        android:paddingHorizontal="12dp"
+        android:clipToPadding="false"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvLabelHistory"
+        app:layout_constraintTop_toBottomOf="@id/toggleGroupReport"
         tools:listitem="@layout/activity_reportcard" />
 
     <TextView
@@ -140,11 +176,11 @@
         android:layout_height="wrap_content"
         android:text="Belum ada riwayat laporan"
         android:textColor="@color/text_hint"
-        android:textSize="16sp"
+        android:textSize="14sp"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvLabelHistory" />
+        app:layout_constraintTop_toBottomOf="@id/toggleGroupReport" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

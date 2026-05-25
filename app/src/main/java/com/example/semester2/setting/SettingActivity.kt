@@ -5,6 +5,7 @@ import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.RadioGroup
@@ -27,11 +28,11 @@ class SettingActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
     private lateinit var database: FirebaseDatabase
     
-    private lateinit var etEditNama: TextInputEditText
-    private lateinit var etEditEmail: TextInputEditText
-    private lateinit var etEditPassword: TextInputEditText
-    private lateinit var ivProfilePicture: ShapeableImageView
-    private lateinit var rgTheme: RadioGroup
+    private var etEditNama: TextInputEditText? = null
+    private var etEditEmail: TextInputEditText? = null
+    private var etEditPassword: TextInputEditText? = null
+    private var ivProfilePicture: ShapeableImageView? = null
+    private var rgTheme: RadioGroup? = null
     private lateinit var loadingDialog: ProgressDialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -64,34 +65,35 @@ class SettingActivity : AppCompatActivity() {
         val sharedPreferences = getSharedPreferences("theme_prefs", Context.MODE_PRIVATE)
         val savedTheme = sharedPreferences.getInt("theme_mode", AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
         
-        // Set RadioButton sesuai tema yang tersimpan
-        when(savedTheme) {
-            AppCompatDelegate.MODE_NIGHT_NO -> rgTheme.check(R.id.rbLight)
-            AppCompatDelegate.MODE_NIGHT_YES -> rgTheme.check(R.id.rbDark)
-            else -> rgTheme.check(R.id.rbSystem)
-        }
-
-        rgTheme.setOnCheckedChangeListener { _, checkedId ->
-            val mode = when(checkedId) {
-                R.id.rbLight -> AppCompatDelegate.MODE_NIGHT_NO
-                R.id.rbDark -> AppCompatDelegate.MODE_NIGHT_YES
-                else -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+        rgTheme?.let { group ->
+            when(savedTheme) {
+                AppCompatDelegate.MODE_NIGHT_NO -> group.check(R.id.rbLight)
+                AppCompatDelegate.MODE_NIGHT_YES -> group.check(R.id.rbDark)
+                else -> group.check(R.id.rbSystem)
             }
-            sharedPreferences.edit().putInt("theme_mode", mode).apply()
-            AppCompatDelegate.setDefaultNightMode(mode)
+
+            group.setOnCheckedChangeListener { _, checkedId ->
+                val mode = when(checkedId) {
+                    R.id.rbLight -> AppCompatDelegate.MODE_NIGHT_NO
+                    R.id.rbDark -> AppCompatDelegate.MODE_NIGHT_YES
+                    else -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+                }
+                sharedPreferences.edit().putInt("theme_mode", mode).apply()
+                AppCompatDelegate.setDefaultNightMode(mode)
+            }
         }
     }
 
     private fun loadUserData() {
         val user = auth.currentUser ?: return
-        etEditEmail.setText(user.email)
+        etEditEmail?.setText(user.email)
         
         database.getReference("users").child(user.uid)
             .addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     if (snapshot.exists()) {
                         val nama = snapshot.child("nama").getValue(String::class.java)
-                        etEditNama.setText(nama)
+                        etEditNama?.setText(nama)
                     }
                 }
                 override fun onCancelled(error: DatabaseError) {}
@@ -99,11 +101,9 @@ class SettingActivity : AppCompatActivity() {
     }
 
     private fun setupListeners() {
-        findViewById<ImageButton>(R.id.btnBackSetting).setOnClickListener {
-            finish()
-        }
+        findViewById<ImageButton>(R.id.btnBackSetting)?.setOnClickListener { finish() }
 
-        findViewById<CardView>(R.id.cardLogout).setOnClickListener {
+        findViewById<CardView>(R.id.cardLogout)?.setOnClickListener {
             auth.signOut()
             val intent = Intent(this, LoginActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
@@ -111,26 +111,20 @@ class SettingActivity : AppCompatActivity() {
             finish()
         }
 
-        findViewById<Button>(R.id.btnSimpanPerubahan).setOnClickListener {
-            simpanPerubahan()
-        }
+        findViewById<Button>(R.id.btnSimpanPerubahan)?.setOnClickListener { simpanPerubahan() }
 
-        findViewById<CardView>(R.id.cardDeleteAccount).setOnClickListener {
-            tampilkanDialogKonfirmasiHapus()
+        findViewById<CardView>(R.id.cardDeleteAccount)?.setOnClickListener {
+            AlertDialog.Builder(this)
+                .setTitle("Hapus Akun")
+                .setMessage("Apakah Anda yakin ingin menghapus akun ini?")
+                .setPositiveButton("Hapus") { _, _ -> hapusAkun() }
+                .setNegativeButton("Batal", null)
+                .show()
         }
         
-        findViewById<com.google.android.material.floatingactionbutton.FloatingActionButton>(R.id.fabEditPhoto).setOnClickListener {
-            Toast.makeText(this, "Fitur ganti foto akan segera hadir", Toast.LENGTH_SHORT).show()
+        findViewById<View>(R.id.fabEditPhoto)?.setOnClickListener {
+            Toast.makeText(this, "Fitur ganti foto segera hadir", Toast.LENGTH_SHORT).show()
         }
-    }
-
-    private fun tampilkanDialogKonfirmasiHapus() {
-        AlertDialog.Builder(this)
-            .setTitle("Hapus Akun")
-            .setMessage("Apakah Anda yakin ingin menghapus akun ini secara permanen?")
-            .setPositiveButton("Hapus") { _, _ -> hapusAkun() }
-            .setNegativeButton("Batal", null)
-            .show()
     }
 
     private fun hapusAkun() {
@@ -149,7 +143,7 @@ class SettingActivity : AppCompatActivity() {
 
     private fun simpanPerubahan() {
         val user = auth.currentUser ?: return
-        val newNama = etEditNama.text.toString().trim()
+        val newNama = etEditNama?.text.toString().trim()
         if (newNama.isEmpty()) return
 
         loadingDialog.show()
