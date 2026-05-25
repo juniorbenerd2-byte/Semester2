@@ -21,6 +21,7 @@ import com.example.semester2.auth.LoginActivity
 import com.google.android.material.imageview.ShapeableImageView
 import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthRecentLoginRequiredException
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
@@ -41,7 +42,6 @@ class SettingActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         
-        // 1. Aktifkan Edge-to-Edge untuk menghilangkan celah kosong di atas
         enableEdgeToEdge()
         setContentView(R.layout.activity_setting)
 
@@ -54,7 +54,7 @@ class SettingActivity : AppCompatActivity() {
         }
 
         initView()
-        handleInsets() // 2. Atur padding agar tidak tertutup status bar
+        handleInsets()
         loadUserData()
         setupThemeSelection()
         setupListeners()
@@ -69,7 +69,6 @@ class SettingActivity : AppCompatActivity() {
     }
 
     private fun handleInsets() {
-        // Memberikan padding otomatis pada root layout agar tidak terpotong status bar
         val mainLayout = findViewById<View>(android.R.id.content)
         ViewCompat.setOnApplyWindowInsetsListener(mainLayout) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -99,7 +98,6 @@ class SettingActivity : AppCompatActivity() {
                 if (mode != savedTheme) {
                     sharedPreferences.edit().putInt("theme_mode", mode).apply()
                     AppCompatDelegate.setDefaultNightMode(mode)
-                    // Recreate untuk memastikan semua warna Container (Pink) di-reset
                     recreate()
                 }
             }
@@ -137,10 +135,10 @@ class SettingActivity : AppCompatActivity() {
 
         findViewById<CardView>(R.id.cardDeleteAccount)?.setOnClickListener {
             AlertDialog.Builder(this)
-                .setTitle("Hapus Akun")
-                .setMessage("Apakah Anda yakin ingin menghapus akun ini?")
-                .setPositiveButton("Hapus") { _, _ -> hapusAkun() }
-                .setNegativeButton("Batal", null)
+                .setTitle("Hapus Akun Permanen")
+                .setMessage("PERINGATAN: Semua data (Profil, Saldo, Laporan) akan dihapus selamanya. Anda tidak akan bisa login lagi. Lanjutkan?")
+                .setPositiveButton("SAYA SETUJU, HAPUS") { _, _ -> hapusAkunPermanen() }
+                .setNegativeButton("BATAL", null)
                 .show()
         }
         
@@ -149,16 +147,48 @@ class SettingActivity : AppCompatActivity() {
         }
     }
 
-    private fun hapusAkun() {
+    private fun hapusAkunPermanen() {
         val user = auth.currentUser ?: return
+        val userId = user.uid
+        loadingDialog.setMessage("Menghapus akun & data...")
         loadingDialog.show()
-        database.getReference("users").child(user.uid).removeValue().addOnCompleteListener { 
-            user.delete().addOnCompleteListener { 
+
+        // 1. Coba hapus akun dari Firebase Auth terlebih dahulu (Cek sensitivitas sesi)
+        user.delete().addOnCompleteListener { authTask ->
+            if (authTask.isSuccessful) {
+                // 2. Jika Auth berhasil dihapus, bersihkan semua database
+                val dbRef = FirebaseDatabase.getInstance().reference
+                val updates = HashMap<String, Any?>()
+                updates["users/$userId"] = null
+                updates["users_data/$userId"] = null
+                
+                dbRef.updateChildren(updates).addOnCompleteListener { 
+                    loadingDialog.dismiss()
+                    Toast.makeText(this, "Akun dan Seluruh Data telah dihapus.", Toast.LENGTH_LONG).show()
+                    val intent = Intent(this, LoginActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    startActivity(intent)
+                    finish()
+                }
+            } else {
                 loadingDialog.dismiss()
-                val intent = Intent(this, LoginActivity::class.java)
-                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                startActivity(intent)
-                finish()
+                if (authTask.exception is FirebaseAuthRecentLoginRequiredException) {
+                    // Masalah Keamanan Firebase: Sesi sudah terlalu lama
+                    AlertDialog.Builder(this)
+                        .setTitle("Login Ulang Diperlukan")
+                        .setMessage("Untuk menghapus akun, sistem memerlukan verifikasi ulang. Silakan Login kembali lalu ulangi proses hapus akun.")
+                        .setPositiveButton("LOGOUT SEKARANG") { _, _ ->
+                            auth.signOut()
+                            val intent = Intent(this, LoginActivity::class.java)
+                            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                            startActivity(intent)
+                            finish()
+                        }
+                        .setNegativeButton("BATAL", null)
+                        .show()
+                } else {
+                    Toast.makeText(this, "Gagal: ${authTask.exception?.message}", Toast.LENGTH_LONG).show()
+                }
             }
         }
     }
@@ -166,13 +196,17 @@ class SettingActivity : AppCompatActivity() {
     private fun simpanPerubahan() {
         val user = auth.currentUser ?: return
         val newNama = etEditNama?.text.toString().trim()
-        if (newNama.isEmpty()) return
+        if (newNama.isEmpty()) {
+            etEditNama?.error = "Nama tidak boleh kosong"
+            return
+        }
 
+        loadingDialog.setMessage("Menyimpan perubahan...")
         loadingDialog.show()
         database.getReference("users").child(user.uid).child("nama").setValue(newNama)
             .addOnCompleteListener { 
                 loadingDialog.dismiss()
-                Toast.makeText(this, "Berhasil diperbarui", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Profil berhasil diperbarui", Toast.LENGTH_SHORT).show()
                 finish()
             }
     }
