@@ -33,6 +33,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
+            app:cardBackgroundColor="@color/card_bg_color"
             app:cardCornerRadius="16dp"
             app:cardElevation="2dp">
 
@@ -48,13 +49,16 @@
                     android:layout_height="wrap_content"
                     android:hint="Nama Lengkap"
                     app:boxStrokeColor="@color/accent_yellow"
-                    app:hintTextColor="@color/accent_yellow">
+                    app:hintTextColor="@color/accent_yellow"
+                    app:startIconDrawable="@drawable/user"
+                    app:startIconTint="@color/text_secondary">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etNamaRegister"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:inputType="textPersonName" />
+                        android:inputType="textPersonName"
+                        android:textColor="@color/text_primary" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
@@ -64,13 +68,16 @@
                     android:layout_marginTop="16dp"
                     android:hint="Email"
                     app:boxStrokeColor="@color/accent_yellow"
-                    app:hintTextColor="@color/accent_yellow">
+                    app:hintTextColor="@color/accent_yellow"
+                    app:startIconDrawable="@android:drawable/ic_dialog_email"
+                    app:startIconTint="@color/text_secondary">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etEmailRegister"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:inputType="textEmailAddress" />
+                        android:inputType="textEmailAddress"
+                        android:textColor="@color/text_primary" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
@@ -81,13 +88,17 @@
                     android:hint="Password"
                     app:boxStrokeColor="@color/accent_yellow"
                     app:hintTextColor="@color/accent_yellow"
-                    app:passwordToggleEnabled="true">
+                    app:passwordToggleEnabled="true"
+                    app:passwordToggleTint="@color/text_secondary"
+                    app:startIconDrawable="@android:drawable/ic_lock_idle_lock"
+                    app:startIconTint="@color/text_secondary">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etPasswordRegister"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:inputType="textPassword" />
+                        android:inputType="textPassword"
+                        android:textColor="@color/text_primary" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <Button
