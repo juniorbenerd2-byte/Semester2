@@ -119,7 +119,7 @@
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:layout_margin="20dp"
-        android:text="Test Print Struk"
+        android:text="Cetak Nota Trolly"
         android:textStyle="bold"
         android:backgroundTint="@color/accent_yellow"
         android:textColor="@color/white"
