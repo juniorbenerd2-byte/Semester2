@@ -1,5 +1,6 @@
 package com.example.semester2.kategori
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -40,9 +41,8 @@ class TrollyActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
     private var userId: String = ""
 
-    // List untuk menampung data trolly mentah dan status kategori
     private var rawTrollyList = ArrayList<ModelTrolly>()
-    private var activeKategoriMap = HashMap<String, String>() // Nama Kategori -> Status
+    private var activeKategoriMap = HashMap<String, String>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -72,7 +72,6 @@ class TrollyActivity : AppCompatActivity() {
             override fun onIncrease(item: ModelTrolly) {
                 updateItemQty(item, 1)
             }
-
             override fun onDecrease(item: ModelTrolly) {
                 updateItemQty(item, -1)
             }
@@ -89,7 +88,6 @@ class TrollyActivity : AppCompatActivity() {
     }
 
     private fun fetchDataCombined() {
-        // Mendengarkan perubahan pada Kategori
         kategoriRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 activeKategoriMap.clear()
@@ -105,7 +103,6 @@ class TrollyActivity : AppCompatActivity() {
             override fun onCancelled(error: DatabaseError) {}
         })
 
-        // Mendengarkan perubahan pada Trolly
         myRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 rawTrollyList.clear()
@@ -127,7 +124,6 @@ class TrollyActivity : AppCompatActivity() {
         var totalBarang = 0
 
         for (item in rawTrollyList) {
-            // Logika Utama: Cek apakah nama produk ada di daftar kategori dan berstatus "Aktif"
             val status = activeKategoriMap[item.namaProduk]
             if (status == "Aktif") {
                 filteredList.add(item)
@@ -154,21 +150,16 @@ class TrollyActivity : AppCompatActivity() {
     private fun updateItemQty(item: ModelTrolly, diff: Int) {
         val newQty = (item.jumlah ?: 0) + diff
         val itemRef = myRef.child(item.idTrolly!!)
-
         if (newQty <= 0) {
             itemRef.removeValue()
         } else {
             val updatedPrice = (item.harga ?: 0L) * newQty
-            val updates = mapOf<String, Any>(
-                "jumlah" to newQty,
-                "totalHarga" to updatedPrice
-            )
+            val updates = mapOf<String, Any>("jumlah" to newQty, "totalHarga" to updatedPrice)
             itemRef.updateChildren(updates)
         }
     }
 
     private fun checkout() {
-        // Pastikan hanya item yang "Aktif" yang diproses untuk checkout
         val activeItems = rawTrollyList.filter { activeKategoriMap[it.namaProduk] == "Aktif" }
         
         if (activeItems.isNotEmpty()) {
@@ -190,12 +181,19 @@ class TrollyActivity : AppCompatActivity() {
             )
 
             newReportRef.setValue(reportData).addOnSuccessListener {
-                // Hapus item yang berhasil di-checkout dari database
+                // Hapus item dari trolly
                 for (item in activeItems) {
                     myRef.child(item.idTrolly!!).removeValue()
                 }
-                Toast.makeText(this, "Checkout Berhasil!", Toast.LENGTH_LONG).show()
+                
+                // Pindah ke ReceiptActivity dan kirim data barang
+                val intent = Intent(this, ReceiptActivity::class.java)
+                intent.putParcelableArrayListExtra("CHECKOUT_ITEMS", ArrayList(activeItems))
+                intent.putExtra("TOTAL_HARGA", totalHargaCheckout)
+                startActivity(intent)
                 finish()
+                
+                Toast.makeText(this, "Checkout Berhasil!", Toast.LENGTH_SHORT).show()
             }
         }
     }

@@ -69,6 +69,10 @@
         <activity
             android:name="com.example.semester2.kategori.PrinterActivity"
             android:exported="false" />
+
+        <activity
+            android:name="com.example.semester2.kategori.ReceiptActivity"
+            android:exported="false" />
             
         <activity
             android:name="com.example.semester2.kategori.MainKategoriActivity"
