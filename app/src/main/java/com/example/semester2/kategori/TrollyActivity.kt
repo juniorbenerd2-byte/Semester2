@@ -42,7 +42,8 @@ class TrollyActivity : AppCompatActivity() {
     private var userId: String = ""
 
     private var rawTrollyList = ArrayList<ModelTrolly>()
-    private var activeKategoriMap = HashMap<String, String>()
+    // Mengubah map untuk menyimpan objek ModelKategori lengkap
+    private var activeKategoriMap = HashMap<String, ModelKategori>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -92,10 +93,9 @@ class TrollyActivity : AppCompatActivity() {
             override fun onDataChange(snapshot: DataSnapshot) {
                 activeKategoriMap.clear()
                 for (ds in snapshot.children) {
-                    val nama = ds.child("namaKategori").getValue(String::class.java)
-                    val status = ds.child("statusKategori").getValue(String::class.java)
-                    if (nama != null && status != null) {
-                        activeKategoriMap[nama] = status
+                    val kategori = ds.getValue(ModelKategori::class.java)
+                    if (kategori?.namaKategori != null) {
+                        activeKategoriMap[kategori.namaKategori!!] = kategori
                     }
                 }
                 filterAndDisplayData()
@@ -124,8 +124,9 @@ class TrollyActivity : AppCompatActivity() {
         var totalBarang = 0
 
         for (item in rawTrollyList) {
-            val status = activeKategoriMap[item.namaProduk]
-            if (status == "Aktif") {
+            val kategori = activeKategoriMap[item.namaProduk]
+            // Item hanya muncul jika kategori Aktif dan Stok > 0
+            if (kategori?.statusKategori == "Aktif") {
                 filteredList.add(item)
                 totalHarga += item.totalHarga ?: 0L
                 totalBarang += item.jumlah ?: 0
@@ -149,6 +150,16 @@ class TrollyActivity : AppCompatActivity() {
 
     private fun updateItemQty(item: ModelTrolly, diff: Int) {
         val newQty = (item.jumlah ?: 0) + diff
+        
+        // Validasi stok sebelum menambah quantity
+        val kategori = activeKategoriMap[item.namaProduk]
+        if (diff > 0 && kategori != null) {
+            if (newQty > kategori.stokKategori) {
+                Toast.makeText(this, "Stok tidak mencukupi!", Toast.LENGTH_SHORT).show()
+                return
+            }
+        }
+
         val itemRef = myRef.child(item.idTrolly!!)
         if (newQty <= 0) {
             itemRef.removeValue()
@@ -160,9 +171,18 @@ class TrollyActivity : AppCompatActivity() {
     }
 
     private fun checkout() {
-        val activeItems = rawTrollyList.filter { activeKategoriMap[it.namaProduk] == "Aktif" }
+        val activeItems = rawTrollyList.filter { activeKategoriMap[it.namaProduk]?.statusKategori == "Aktif" }
         
         if (activeItems.isNotEmpty()) {
+            // Cek stok sekali lagi sebelum benar-benar checkout
+            for (item in activeItems) {
+                val kategori = activeKategoriMap[item.namaProduk]
+                if (kategori == null || (item.jumlah ?: 0) > kategori.stokKategori) {
+                    Toast.makeText(this, "Gagal: Stok ${item.namaProduk} tidak mencukupi", Toast.LENGTH_LONG).show()
+                    return
+                }
+            }
+
             var totalHargaCheckout = 0L
             for (item in activeItems) {
                 totalHargaCheckout += item.totalHarga ?: 0L
@@ -181,12 +201,16 @@ class TrollyActivity : AppCompatActivity() {
             )
 
             newReportRef.setValue(reportData).addOnSuccessListener {
-                // Hapus item dari trolly
+                // KURANGI STOK KATEGORI DAN HAPUS ITEM TROLLY
                 for (item in activeItems) {
+                    val kategori = activeKategoriMap[item.namaProduk]
+                    if (kategori != null) {
+                        val stokBaru = kategori.stokKategori - (item.jumlah ?: 0)
+                        kategoriRef.child(kategori.idKategori!!).child("stokKategori").setValue(stokBaru)
+                    }
                     myRef.child(item.idTrolly!!).removeValue()
                 }
                 
-                // Pindah ke ReceiptActivity dan kirim data barang
                 val intent = Intent(this, ReceiptActivity::class.java)
                 intent.putParcelableArrayListExtra("CHECKOUT_ITEMS", ArrayList(activeItems))
                 intent.putExtra("TOTAL_HARGA", totalHargaCheckout)

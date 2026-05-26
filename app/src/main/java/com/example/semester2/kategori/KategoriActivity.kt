@@ -33,6 +33,7 @@ class KategoriActivity : AppCompatActivity() {
     private lateinit var rbMakanan: RadioButton
     private lateinit var rbMinuman: RadioButton
     private lateinit var etHargaKategori: TextInputEditText
+    private lateinit var etStokKategori: TextInputEditText
     private lateinit var radioGroupStatus: RadioGroup
     private lateinit var rbAktif: RadioButton
     private lateinit var rbTidakAktif: RadioButton
@@ -72,6 +73,7 @@ class KategoriActivity : AppCompatActivity() {
         rbMakanan = findViewById(R.id.rbMakanan)
         rbMinuman = findViewById(R.id.rbMinuman)
         etHargaKategori = findViewById(R.id.etHargaKategori)
+        etStokKategori = findViewById(R.id.etStokKategori)
         radioGroupStatus = findViewById(R.id.radioGroupStatus)
         rbAktif = findViewById(R.id.rbAktif)
         rbTidakAktif = findViewById(R.id.rbTidakAktif)
@@ -138,6 +140,7 @@ class KategoriActivity : AppCompatActivity() {
 
             val formattedHarga = NumberFormat.getNumberInstance(Locale("id", "ID")).format(kategori.hargaKategori)
             etHargaKategori.setText(formattedHarga)
+            etStokKategori.setText(kategori.stokKategori.toString())
             
             if (kategori.statusKategori?.equals("Aktif", ignoreCase = true) == true) {
                 rbAktif.isChecked = true
@@ -187,6 +190,7 @@ class KategoriActivity : AppCompatActivity() {
     private fun simpanKategori() {
         val namaKategori = etNamaKategori.text.toString().trim()
         val hargaString = etHargaKategori.text.toString().replace(".", "").trim()
+        val stokString = etStokKategori.text.toString().trim()
 
         val selectedJenisId = radioGroupJenisKategori.checkedRadioButtonId
         if (selectedJenisId == -1) {
@@ -195,12 +199,13 @@ class KategoriActivity : AppCompatActivity() {
         }
         val jenisKategori = if (selectedJenisId == R.id.rbMakanan) "Makanan" else "Minuman"
 
-        if (namaKategori.isEmpty() || hargaString.isEmpty()) {
-            Toast.makeText(this, "Nama dan Harga harus diisi", Toast.LENGTH_SHORT).show()
+        if (namaKategori.isEmpty() || hargaString.isEmpty() || stokString.isEmpty()) {
+            Toast.makeText(this, "Nama, Harga, dan Stok harus diisi", Toast.LENGTH_SHORT).show()
             return
         }
 
         val hargaKategori = hargaString.toLongOrNull() ?: 0L
+        val stokKategori = stokString.toIntOrNull() ?: 0
         val selectedStatusId = radioGroupStatus.checkedRadioButtonId
         if (selectedStatusId == -1) {
             Toast.makeText(this, "Pilih status kategori", Toast.LENGTH_SHORT).show()
@@ -228,6 +233,7 @@ class KategoriActivity : AppCompatActivity() {
             namaKategori = namaKategori,
             jenisKategori = jenisKategori,
             hargaKategori = hargaKategori,
+            stokKategori = stokKategori,
             statusKategori = status
         )
 

@@ -9,5 +9,6 @@ data class ModelKategori(
     var namaKategori: String? = null,
     var jenisKategori: String? = null,
     var hargaKategori: Long = 0,
+    var stokKategori: Int = 0,
     var statusKategori: String? = null
 ) : Parcelable
