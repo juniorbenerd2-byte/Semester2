@@ -1,16 +1,14 @@
 package com.example.semester2.adapter
 
-import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.CheckBox
+import android.widget.RadioButton
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.semester2.R
 import com.example.semester2.kategori.ModelKategori
-import java.text.NumberFormat
-import java.util.Locale
+import com.google.android.material.textfield.TextInputEditText
 
 class DataKategoriAdapter(private var list: ArrayList<ModelKategori>) : 
     RecyclerView.Adapter<DataKategoriAdapter.ViewHolder>() {
@@ -26,54 +24,50 @@ class DataKategoriAdapter(private var list: ArrayList<ModelKategori>) :
     }
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val tvIdKategori: TextView = view.findViewById(R.id.tv_id_kategori)
-        val tvNamaKategori: TextView = view.findViewById(R.id.tv_kategori)
-        val tvJenisKategori: TextView = view.findViewById(R.id.tv_jenis_kategori)
-        val tvHargaKategori: TextView = view.findViewById(R.id.tv_harga_kategori)
-        val cbStatus: CheckBox = view.findViewById(R.id.cb_status)
+        val etNama: TextInputEditText = view.findViewById(R.id.etNamaKategori)
+        val etHarga: TextInputEditText = view.findViewById(R.id.etHargaKategori)
+        val etStok: TextInputEditText = view.findViewById(R.id.etStokKategori)
+        val rbAktif: RadioButton = view.findViewById(R.id.rbAktif)
+        val rbTidakAktif: RadioButton = view.findViewById(R.id.rbTidakAktif)
+        val btnSimpan: View = view.findViewById(R.id.btnSimpan)
+        val tvTitle: TextView = view.findViewById(R.id.tvTitleKategori)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.activity_kategoricard, parent, false)
+            .inflate(R.layout.activity_kategori, parent, false)
         return ViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = list[position]
         
-        holder.tvIdKategori.text = "ID: ${item.idKategori ?: "-"}"
-        holder.tvNamaKategori.text = item.namaKategori ?: "-"
-        holder.tvJenisKategori.text = "Jenis: ${item.jenisKategori ?: "-"}"
-        holder.tvHargaKategori.text = formatRupiah(item.hargaKategori)
+        // Menampilkan Data
+        holder.tvTitle.text = "Stok: ${item.stokKategori}"
+        holder.tvTitle.visibility = View.VISIBLE
         
-        holder.cbStatus.text = item.statusKategori ?: "Tidak Aktif"
+        holder.etNama.setText(item.namaKategori ?: "-")
+        holder.etHarga.setText("Rp ${item.hargaKategori}")
+        holder.etStok.setText(item.stokKategori.toString())
         
-        val isAktif = item.statusKategori?.equals("Aktif", ignoreCase = true) == true
-        holder.cbStatus.isChecked = isAktif
+        // Nonaktifkan input agar hanya bisa dilihat di list
+        holder.etNama.isEnabled = false
+        holder.etHarga.isEnabled = false
+        holder.etStok.isEnabled = false
         
-        // Atur warna teks dan tombol berdasarkan status
-        if (isAktif) {
-            holder.cbStatus.setTextColor(Color.parseColor("#10B981")) // Hijau sesuai tema
-            holder.cbStatus.buttonTintList = android.content.res.ColorStateList.valueOf(Color.parseColor("#10B981"))
+        if (item.statusKategori?.equals("Aktif", ignoreCase = true) == true) {
+            holder.rbAktif.isChecked = true
         } else {
-            holder.cbStatus.setTextColor(Color.parseColor("#EF4444")) // Merah
-            holder.cbStatus.buttonTintList = android.content.res.ColorStateList.valueOf(Color.parseColor("#EF4444"))
+            holder.rbTidakAktif.isChecked = true
         }
-
-        // Agar klik pada CheckBox tidak mengonsumsi event klik dari item
-        holder.cbStatus.isClickable = false
-        holder.cbStatus.isFocusable = false
+        
+        holder.rbAktif.isEnabled = false
+        holder.rbTidakAktif.isEnabled = false
+        holder.btnSimpan.visibility = View.GONE
 
         holder.itemView.setOnClickListener {
             listener?.onItemClick(item)
         }
-    }
-
-    private fun formatRupiah(number: Long): String {
-        val localeID = Locale("in", "ID")
-        val numberFormat = NumberFormat.getCurrencyInstance(localeID)
-        return numberFormat.format(number).replace("Rp", "Rp ")
     }
 
     override fun getItemCount(): Int = list.size

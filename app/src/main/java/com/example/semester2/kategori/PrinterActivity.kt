@@ -28,29 +28,27 @@ import androidx.core.app.ActivityCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.semester2.R
+import com.example.semester2.model.ModelReport
 import com.example.semester2.model.ModelTrolly
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.*
 import java.io.IOException
 import java.io.OutputStream
 import java.text.NumberFormat
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
-import java.util.UUID
+import java.util.*
+import kotlin.collections.ArrayList
 
 class PrinterActivity : AppCompatActivity() {
 
     private lateinit var bluetoothAdapter: BluetoothAdapter
     private val deviceList = ArrayList<BluetoothDevice>()
-    private lateinit var adapter: DeviceAdapter
+    private lateinit var deviceAdapter: DeviceAdapter
     
     private lateinit var tvStatus: TextView
     private lateinit var tvName: TextView
-    private lateinit var btnScan: Button
+    private lateinit var rvHistory: RecyclerView
+    private lateinit var tvKosong: TextView
+    private lateinit var cardDeviceList: View
     
     private var bluetoothSocket: BluetoothSocket? = null
     private var outputStream: OutputStream? = null
@@ -65,96 +63,89 @@ class PrinterActivity : AppCompatActivity() {
         bluetoothAdapter = bluetoothManager.adapter
 
         initView()
-        setupRecyclerView()
+        setupBluetoothList()
+        setupHistoryList()
         checkPermissions()
 
         findViewById<ImageButton>(R.id.btnBackPrinter).setOnClickListener { finish() }
         
-        btnScan.setOnClickListener { startDiscovery() }
-
-        findViewById<Button>(R.id.btnTestPrint).setOnClickListener {
-            if (bluetoothSocket == null || !bluetoothSocket!!.isConnected) {
-                Toast.makeText(this, "Hubungkan printer thermal dahulu", Toast.LENGTH_SHORT).show()
-            } else {
-                fetchActiveTrollyAndPrint()
-            }
+        findViewById<Button>(R.id.btnScanPrinter).setOnClickListener { 
+            cardDeviceList.visibility = if (cardDeviceList.visibility == View.VISIBLE) View.GONE else View.VISIBLE
+            if (cardDeviceList.visibility == View.VISIBLE) startDiscovery()
         }
+
+        fetchReceiptHistory()
     }
 
     private fun initView() {
         tvStatus = findViewById(R.id.tvPrinterStatus)
         tvName = findViewById(R.id.tvPrinterName)
-        btnScan = findViewById(R.id.btnScanPrinter)
+        rvHistory = findViewById(R.id.rvReceiptHistory)
+        tvKosong = findViewById(R.id.tvKosongNota)
+        cardDeviceList = findViewById(R.id.cardDeviceList)
     }
 
-    private fun setupRecyclerView() {
+    private fun setupBluetoothList() {
         val rv = findViewById<RecyclerView>(R.id.rvBluetoothDevices)
-        adapter = DeviceAdapter(deviceList) { connectToDevice(it) }
+        deviceAdapter = DeviceAdapter(deviceList) { connectToDevice(it) }
         rv.layoutManager = LinearLayoutManager(this)
-        rv.adapter = adapter
+        rv.adapter = deviceAdapter
     }
 
-    private fun fetchActiveTrollyAndPrint() {
+    private fun setupHistoryList() {
+        rvHistory.layoutManager = LinearLayoutManager(this)
+    }
+
+    private fun fetchReceiptHistory() {
         val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
-        val db = FirebaseDatabase.getInstance().reference
-        
-        db.child("users_data").child(userId).child("kategori")
-            .addListenerForSingleValueEvent(object : ValueEventListener {
-                override fun onDataChange(katSnapshot: DataSnapshot) {
-                    val activeKategori = HashSet<String>()
-                    for (ds in katSnapshot.children) {
-                        val nama = ds.child("namaKategori").getValue(String::class.java)
-                        val status = ds.child("statusKategori").getValue(String::class.java)
-                        if (nama != null && status == "Aktif") activeKategori.add(nama)
-                    }
+        val myRef = FirebaseDatabase.getInstance().getReference("users_data").child(userId).child("report")
 
-                    db.child("users_data").child(userId).child("trolly")
-                        .addListenerForSingleValueEvent(object : ValueEventListener {
-                            override fun onDataChange(trollySnapshot: DataSnapshot) {
-                                val printList = ArrayList<ModelTrolly>()
-                                for (ds in trollySnapshot.children) {
-                                    val item = ds.getValue(ModelTrolly::class.java)
-                                    if (item != null && activeKategori.contains(item.namaProduk)) {
-                                        printList.add(item)
-                                    }
-                                }
-
-                                if (printList.isEmpty()) {
-                                    Toast.makeText(this@PrinterActivity, "Tidak ada item aktif untuk dicetak", Toast.LENGTH_SHORT).show()
-                                } else {
-                                    sendToPrinter(printList)
-                                }
-                            }
-                            override fun onCancelled(error: DatabaseError) {}
-                        })
+        myRef.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val list = ArrayList<ModelReport>()
+                for (ds in snapshot.children) {
+                    val report = ds.getValue(ModelReport::class.java)
+                    if (report != null) list.add(report)
                 }
-                override fun onCancelled(error: DatabaseError) {}
-            })
+                list.reverse() // Tampilkan yang terbaru di atas
+
+                if (list.isEmpty()) {
+                    tvKosong.visibility = View.VISIBLE
+                    rvHistory.visibility = View.GONE
+                } else {
+                    tvKosong.visibility = View.GONE
+                    rvHistory.visibility = View.VISIBLE
+                    rvHistory.adapter = ReceiptHistoryAdapter(list)
+                }
+            }
+            override fun onCancelled(error: DatabaseError) {}
+        })
     }
 
-    private fun sendToPrinter(items: List<ModelTrolly>) {
+    private fun printReceipt(report: ModelReport) {
+        if (bluetoothSocket == null || !bluetoothSocket!!.isConnected) {
+            Toast.makeText(this, "Hubungkan printer dahulu", Toast.LENGTH_SHORT).show()
+            cardDeviceList.visibility = View.VISIBLE
+            return
+        }
+
         try {
             val os = outputStream ?: return
-            val sdf = SimpleDateFormat("dd/MM/yy HH:mm", Locale.getDefault())
-            val date = sdf.format(Date())
-            
-            var total = 0L
             val nota = StringBuilder()
             
             nota.append("\n      TOKO JUNIOR\n")
             nota.append("--------------------------------\n")
-            nota.append("Tgl: $date\n")
+            nota.append("Tgl: ${report.tanggalReport}\n")
+            nota.append("ID : ${report.idReport?.takeLast(6)}\n")
             nota.append("--------------------------------\n")
             
-            for (item in items) {
-                val subtotal = item.totalHarga ?: 0L
-                total += subtotal
+            report.items?.forEach { item ->
                 nota.append("${item.namaProduk}\n")
-                nota.append("${item.jumlah} x ${formatRupiahSimple(item.harga ?: 0)} = ${formatRupiahSimple(subtotal)}\n")
+                nota.append("${item.jumlah} x ${formatRupiah(item.harga ?: 0)} = ${formatRupiah(item.totalHarga ?: 0)}\n")
             }
             
             nota.append("--------------------------------\n")
-            nota.append("TOTAL:          ${formatRupiahSimple(total)}\n")
+            nota.append("TOTAL:          ${formatRupiah(report.totalPenjualan ?: 0)}\n")
             nota.append("--------------------------------\n")
             nota.append("    Terima Kasih\n\n\n\n\n")
 
@@ -167,43 +158,29 @@ class PrinterActivity : AppCompatActivity() {
         }
     }
 
-    private fun formatRupiahSimple(number: Long): String {
+    private fun formatRupiah(number: Long): String {
         return NumberFormat.getNumberInstance(Locale("id", "ID")).format(number)
     }
 
     @SuppressLint("MissingPermission")
     private fun connectToDevice(device: BluetoothDevice) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && 
-            ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
-            checkPermissions()
-            return
-        }
-
         tvStatus.text = "Menghubungkan..."
         Thread {
             try {
                 bluetoothSocket = device.createRfcommSocketToServiceRecord(SPP_UUID)
-                
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                    if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_SCAN) == PackageManager.PERMISSION_GRANTED) {
-                        bluetoothAdapter.cancelDiscovery()
-                    }
-                } else {
-                    bluetoothAdapter.cancelDiscovery()
-                }
-
+                bluetoothAdapter.cancelDiscovery()
                 bluetoothSocket?.connect()
                 outputStream = bluetoothSocket?.outputStream
-                
                 Handler(Looper.getMainLooper()).post {
                     tvStatus.text = "Terhubung"
                     tvName.text = device.name ?: "Printer"
-                    Toast.makeText(this, "Koneksi Berhasil", Toast.LENGTH_SHORT).show()
+                    cardDeviceList.visibility = View.GONE
+                    Toast.makeText(this, "Printer Siap!", Toast.LENGTH_SHORT).show()
                 }
             } catch (e: IOException) {
                 Handler(Looper.getMainLooper()).post {
-                    tvStatus.text = "Gagal"
-                    Toast.makeText(this, "Gagal konek printer: ${e.message}", Toast.LENGTH_SHORT).show()
+                    tvStatus.text = "Gagal Terhubung"
+                    Toast.makeText(this, "Koneksi Gagal", Toast.LENGTH_SHORT).show()
                 }
             }
         }.start()
@@ -221,39 +198,20 @@ class PrinterActivity : AppCompatActivity() {
 
     @SuppressLint("MissingPermission")
     private fun startDiscovery() {
-        if (!bluetoothAdapter.isEnabled) { 
-            Toast.makeText(this, "Aktifkan Bluetooth Terlebih Dahulu", Toast.LENGTH_SHORT).show()
-            return 
-        }
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && 
-            ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED) {
-            checkPermissions()
-            return
-        }
-
         deviceList.clear()
         bluetoothAdapter.bondedDevices?.forEach { deviceList.add(it) }
-        adapter.notifyDataSetChanged()
-        
+        deviceAdapter.notifyDataSetChanged()
         bluetoothAdapter.startDiscovery()
         registerReceiver(receiver, IntentFilter(BluetoothDevice.ACTION_FOUND))
-        Toast.makeText(this, "Mencari perangkat...", Toast.LENGTH_SHORT).show()
     }
 
     private val receiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             if (BluetoothDevice.ACTION_FOUND == intent.action) {
-                val device: BluetoothDevice? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                    intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE, BluetoothDevice::class.java)
-                } else {
-                    @Suppress("DEPRECATION")
-                    intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE)
-                }
-                
+                val device: BluetoothDevice? = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE)
                 if (device != null && !deviceList.contains(device)) {
                     deviceList.add(device)
-                    adapter.notifyDataSetChanged()
+                    deviceAdapter.notifyDataSetChanged()
                 }
             }
         }
@@ -261,10 +219,25 @@ class PrinterActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        try { 
-            unregisterReceiver(receiver)
-            bluetoothSocket?.close() 
-        } catch (e: Exception) {}
+        try { unregisterReceiver(receiver) } catch (e: Exception) {}
+        try { bluetoothSocket?.close() } catch (e: Exception) {}
+    }
+
+    // ADAPTER UNTUK RIWAYAT NOTA
+    inner class ReceiptHistoryAdapter(private val list: List<ModelReport>) : RecyclerView.Adapter<ReceiptHistoryAdapter.ViewHolder>() {
+        inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+            val tvTgl: TextView = view.findViewById(R.id.tv_tanggal_report)
+            val tvTotal: TextView = view.findViewById(R.id.tv_total_penjualan_report)
+            val btnPrint: View = view.findViewById(R.id.report_card)
+        }
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.activity_reportcard, parent, false))
+        override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+            val item = list[position]
+            holder.tvTgl.text = item.tanggalReport
+            holder.tvTotal.text = "Rp ${formatRupiah(item.totalPenjualan ?: 0)}"
+            holder.itemView.setOnClickListener { printReceipt(item) }
+        }
+        override fun getItemCount() = list.size
     }
 
     inner class DeviceAdapter(private val devices: List<BluetoothDevice>, private val onClick: (BluetoothDevice) -> Unit) : RecyclerView.Adapter<DeviceAdapter.ViewHolder>() {
@@ -273,15 +246,10 @@ class PrinterActivity : AppCompatActivity() {
             val address: TextView = view.findViewById(android.R.id.text2)
         }
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = ViewHolder(LayoutInflater.from(parent.context).inflate(android.R.layout.simple_list_item_2, parent, false))
-        
         @SuppressLint("MissingPermission")
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             val device = devices[position]
-            val hasPermission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                ActivityCompat.checkSelfPermission(this@PrinterActivity, Manifest.permission.BLUETOOTH_CONNECT) == PackageManager.PERMISSION_GRANTED
-            } else true
-            
-            holder.name.text = if (hasPermission) device.name ?: "Printer" else "Printer (Izin diperlukan)"
+            holder.name.text = device.name ?: "Unknown Device"
             holder.address.text = device.address
             holder.itemView.setOnClickListener { onClick(device) }
         }

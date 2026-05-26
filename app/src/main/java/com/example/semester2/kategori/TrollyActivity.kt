@@ -15,15 +15,12 @@ import com.example.semester2.adapter.TrollyAdapter
 import com.example.semester2.model.ModelReport
 import com.example.semester2.model.ModelTrolly
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.*
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
+import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 class TrollyActivity : AppCompatActivity() {
 
@@ -42,7 +39,6 @@ class TrollyActivity : AppCompatActivity() {
     private var userId: String = ""
 
     private var rawTrollyList = ArrayList<ModelTrolly>()
-    // Mengubah map untuk menyimpan objek ModelKategori lengkap
     private var activeKategoriMap = HashMap<String, ModelKategori>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -52,11 +48,7 @@ class TrollyActivity : AppCompatActivity() {
         auth = FirebaseAuth.getInstance()
         userId = auth.currentUser?.uid ?: ""
 
-        if (userId.isEmpty()) {
-            Toast.makeText(this, "Sesi berakhir", Toast.LENGTH_SHORT).show()
-            finish()
-            return
-        }
+        if (userId.isEmpty()) { finish(); return }
 
         rvTrolly = findViewById(R.id.rvTrolly)
         tvKosongTrolly = findViewById(R.id.tvKosongTrolly)
@@ -70,12 +62,8 @@ class TrollyActivity : AppCompatActivity() {
         kategoriRef = database.getReference("users_data").child(userId).child("kategori")
 
         adapter = TrollyAdapter(ArrayList(), object : TrollyAdapter.OnQtyChangeListener {
-            override fun onIncrease(item: ModelTrolly) {
-                updateItemQty(item, 1)
-            }
-            override fun onDecrease(item: ModelTrolly) {
-                updateItemQty(item, -1)
-            }
+            override fun onIncrease(item: ModelTrolly) { updateItemQty(item, 1) }
+            override fun onDecrease(item: ModelTrolly) { updateItemQty(item, -1) }
         })
 
         rvTrolly.layoutManager = LinearLayoutManager(this)
@@ -83,9 +71,7 @@ class TrollyActivity : AppCompatActivity() {
 
         fetchDataCombined()
 
-        btnCheckout.setOnClickListener {
-            checkout()
-        }
+        btnCheckout.setOnClickListener { checkout() }
     }
 
     private fun fetchDataCombined() {
@@ -94,9 +80,7 @@ class TrollyActivity : AppCompatActivity() {
                 activeKategoriMap.clear()
                 for (ds in snapshot.children) {
                     val kategori = ds.getValue(ModelKategori::class.java)
-                    if (kategori?.namaKategori != null) {
-                        activeKategoriMap[kategori.namaKategori!!] = kategori
-                    }
+                    if (kategori?.namaKategori != null) activeKategoriMap[kategori.namaKategori!!] = kategori
                 }
                 filterAndDisplayData()
             }
@@ -106,11 +90,9 @@ class TrollyActivity : AppCompatActivity() {
         myRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 rawTrollyList.clear()
-                if (snapshot.exists()) {
-                    for (ds in snapshot.children) {
-                        val item = ds.getValue(ModelTrolly::class.java)
-                        if (item != null) rawTrollyList.add(item)
-                    }
+                for (ds in snapshot.children) {
+                    val item = ds.getValue(ModelTrolly::class.java)
+                    if (item != null) rawTrollyList.add(item)
                 }
                 filterAndDisplayData()
             }
@@ -125,7 +107,6 @@ class TrollyActivity : AppCompatActivity() {
 
         for (item in rawTrollyList) {
             val kategori = activeKategoriMap[item.namaProduk]
-            // Item hanya muncul jika kategori Aktif dan Stok > 0
             if (kategori?.statusKategori == "Aktif") {
                 filteredList.add(item)
                 totalHarga += item.totalHarga ?: 0L
@@ -150,80 +131,54 @@ class TrollyActivity : AppCompatActivity() {
 
     private fun updateItemQty(item: ModelTrolly, diff: Int) {
         val newQty = (item.jumlah ?: 0) + diff
-        
-        // Validasi stok sebelum menambah quantity
         val kategori = activeKategoriMap[item.namaProduk]
-        if (diff > 0 && kategori != null) {
-            if (newQty > kategori.stokKategori) {
-                Toast.makeText(this, "Stok tidak mencukupi!", Toast.LENGTH_SHORT).show()
-                return
-            }
+        if (diff > 0 && kategori != null && newQty > kategori.stokKategori) {
+            Toast.makeText(this, "Stok terbatas!", Toast.LENGTH_SHORT).show()
+            return
         }
-
         val itemRef = myRef.child(item.idTrolly!!)
-        if (newQty <= 0) {
-            itemRef.removeValue()
-        } else {
-            val updatedPrice = (item.harga ?: 0L) * newQty
-            val updates = mapOf<String, Any>("jumlah" to newQty, "totalHarga" to updatedPrice)
-            itemRef.updateChildren(updates)
-        }
+        if (newQty <= 0) itemRef.removeValue()
+        else itemRef.updateChildren(mapOf("jumlah" to newQty, "totalHarga" to (item.harga ?: 0L) * newQty))
     }
 
     private fun checkout() {
         val activeItems = rawTrollyList.filter { activeKategoriMap[it.namaProduk]?.statusKategori == "Aktif" }
-        
-        if (activeItems.isNotEmpty()) {
-            // Cek stok sekali lagi sebelum benar-benar checkout
-            for (item in activeItems) {
+        if (activeItems.isEmpty()) return
+
+        var totalHargaCheckout = 0L
+        activeItems.forEach { totalHargaCheckout += it.totalHarga ?: 0L }
+
+        val newReportRef = reportRef.push()
+        val reportId = newReportRef.key
+        val tanggal = SimpleDateFormat("dd MMMM yyyy, HH:mm", Locale("id", "ID")).format(Date())
+
+        // PENTING: Menyimpan 'items' agar riwayat nota bisa diprint lagi
+        val reportData = ModelReport(
+            idReport = reportId,
+            totalPenjualan = totalHargaCheckout,
+            totalTransaksi = activeItems.size,
+            tanggalReport = tanggal,
+            items = activeItems
+        )
+
+        newReportRef.setValue(reportData).addOnSuccessListener {
+            activeItems.forEach { item ->
                 val kategori = activeKategoriMap[item.namaProduk]
-                if (kategori == null || (item.jumlah ?: 0) > kategori.stokKategori) {
-                    Toast.makeText(this, "Gagal: Stok ${item.namaProduk} tidak mencukupi", Toast.LENGTH_LONG).show()
-                    return
+                if (kategori != null) {
+                    kategoriRef.child(kategori.idKategori!!).child("stokKategori").setValue(kategori.stokKategori - (item.jumlah ?: 0))
                 }
+                myRef.child(item.idTrolly!!).removeValue()
             }
-
-            var totalHargaCheckout = 0L
-            for (item in activeItems) {
-                totalHargaCheckout += item.totalHarga ?: 0L
+            val intent = Intent(this, ReceiptActivity::class.java).apply {
+                putParcelableArrayListExtra("CHECKOUT_ITEMS", ArrayList(activeItems))
+                putExtra("TOTAL_HARGA", totalHargaCheckout)
             }
-
-            val newReportRef = reportRef.push()
-            val reportId = newReportRef.key
-            val sdf = SimpleDateFormat("dd MMMM yyyy, HH:mm", Locale("in", "ID"))
-            val tanggal = sdf.format(Date())
-
-            val reportData = ModelReport(
-                idReport = reportId,
-                totalPenjualan = totalHargaCheckout,
-                totalTransaksi = 1,
-                tanggalReport = tanggal
-            )
-
-            newReportRef.setValue(reportData).addOnSuccessListener {
-                // KURANGI STOK KATEGORI DAN HAPUS ITEM TROLLY
-                for (item in activeItems) {
-                    val kategori = activeKategoriMap[item.namaProduk]
-                    if (kategori != null) {
-                        val stokBaru = kategori.stokKategori - (item.jumlah ?: 0)
-                        kategoriRef.child(kategori.idKategori!!).child("stokKategori").setValue(stokBaru)
-                    }
-                    myRef.child(item.idTrolly!!).removeValue()
-                }
-                
-                val intent = Intent(this, ReceiptActivity::class.java)
-                intent.putParcelableArrayListExtra("CHECKOUT_ITEMS", ArrayList(activeItems))
-                intent.putExtra("TOTAL_HARGA", totalHargaCheckout)
-                startActivity(intent)
-                finish()
-                
-                Toast.makeText(this, "Checkout Berhasil!", Toast.LENGTH_SHORT).show()
-            }
+            startActivity(intent)
+            finish()
         }
     }
 
     private fun formatRupiah(number: Long): String {
-        val format = NumberFormat.getCurrencyInstance(Locale("in", "ID"))
-        return format.format(number).replace("Rp", "Rp ").replace(",00", "")
+        return NumberFormat.getCurrencyInstance(Locale("id", "ID")).format(number).replace(",00", "")
     }
 }

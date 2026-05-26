@@ -8,5 +8,6 @@ data class ModelReport(
     var idReport: String? = null,
     var totalPenjualan: Long? = 0L,
     var totalTransaksi: Int? = 0,
-    var tanggalReport: String? = null
+    var tanggalReport: String? = null,
+    var items: List<ModelTrolly>? = null // Menambahkan list barang untuk riwayat nota
 ) : Parcelable
