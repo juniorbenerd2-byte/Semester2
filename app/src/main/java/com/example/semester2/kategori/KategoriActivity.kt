@@ -1,29 +1,36 @@
 package com.example.semester2.kategori
 
+import android.app.ProgressDialog
+import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
+import android.util.Base64
 import android.view.View
-import android.widget.Button
-import android.widget.RadioButton
-import android.widget.RadioGroup
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.IntentCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.bumptech.glide.Glide
 import com.example.semester2.R
 import com.example.semester2.model.ModelTrolly
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.imageview.ShapeableImageView
 import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
+import java.io.ByteArrayOutputStream
+import java.io.InputStream
 import java.text.NumberFormat
-import java.util.Locale
+import java.util.*
 
 class KategoriActivity : AppCompatActivity() {
 
@@ -39,11 +46,21 @@ class KategoriActivity : AppCompatActivity() {
     private lateinit var rbTidakAktif: RadioButton
     private lateinit var btnSimpan: Button
     private lateinit var btnHapusKategori: Button
+    private lateinit var ivFotoKategori: ShapeableImageView
+    private lateinit var fabAddPhotoKategori: FloatingActionButton
 
     private lateinit var database: DatabaseReference
     private lateinit var auth: FirebaseAuth
     private var userId: String = ""
     private var editKategori: ModelKategori? = null
+    private var imageBase64: String? = null
+    private lateinit var loadingDialog: ProgressDialog
+
+    private val getImage = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+        uri?.let {
+            convertImageToBase64(it)
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,6 +74,11 @@ class KategoriActivity : AppCompatActivity() {
             Toast.makeText(this, "Sesi berakhir, silakan login kembali", Toast.LENGTH_SHORT).show()
             finish()
             return
+        }
+
+        loadingDialog = ProgressDialog(this).apply {
+            setMessage("Memproses...")
+            setCancelable(false)
         }
 
         initView()
@@ -79,13 +101,48 @@ class KategoriActivity : AppCompatActivity() {
         rbTidakAktif = findViewById(R.id.rbTidakAktif)
         btnSimpan = findViewById(R.id.btnSimpan)
         btnHapusKategori = findViewById(R.id.btnHapusKategori)
+        ivFotoKategori = findViewById(R.id.ivFotoKategori)
+        fabAddPhotoKategori = findViewById(R.id.fabAddPhotoKategori)
 
         val mainView = findViewById<View>(R.id.main_kategori)
         ViewCompat.setOnApplyWindowInsetsListener(mainView) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.left, systemBars.bottom)
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+    }
+
+    private fun convertImageToBase64(uri: Uri) {
+        try {
+            val inputStream: InputStream? = contentResolver.openInputStream(uri)
+            val bitmap = BitmapFactory.decodeStream(inputStream)
+            
+            // Resize to prevent database size limits (Base64 is ~33% larger than binary)
+            val resizedBitmap = resizeBitmap(bitmap, 400)
+            
+            val outputStream = ByteArrayOutputStream()
+            resizedBitmap.compress(Bitmap.CompressFormat.JPEG, 70, outputStream)
+            val bytes = outputStream.toByteArray()
+            imageBase64 = Base64.encodeToString(bytes, Base64.DEFAULT)
+            
+            ivFotoKategori.setImageBitmap(resizedBitmap)
+        } catch (e: Exception) {
+            Toast.makeText(this, "Gagal memproses gambar: ${e.message}", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun resizeBitmap(bitmap: Bitmap, maxSize: Int): Bitmap {
+        var width = bitmap.width
+        var height = bitmap.height
+        val bitmapRatio = width.toFloat() / height.toFloat()
+        if (bitmapRatio > 1) {
+            width = maxSize
+            height = (width / bitmapRatio).toInt()
+        } else {
+            height = maxSize
+            width = (height * bitmapRatio).toInt()
+        }
+        return Bitmap.createScaledBitmap(bitmap, width, height, true)
     }
 
     private fun setupHargaFormatter() {
@@ -147,6 +204,16 @@ class KategoriActivity : AppCompatActivity() {
             } else {
                 rbTidakAktif.isChecked = true
             }
+
+            if (!kategori.fotoKategori.isNullOrEmpty()) {
+                try {
+                    val imageBytes = Base64.decode(kategori.fotoKategori, Base64.DEFAULT)
+                    val decodedImage = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
+                    ivFotoKategori.setImageBitmap(decodedImage)
+                } catch (e: Exception) {
+                    ivFotoKategori.setImageResource(R.drawable.category)
+                }
+            }
         }
     }
 
@@ -156,10 +223,13 @@ class KategoriActivity : AppCompatActivity() {
 
     private fun setupListeners() {
         btnSimpan.setOnClickListener {
-            simpanKategori()
+            simpanData()
         }
         btnHapusKategori.setOnClickListener {
             showDeleteDialog()
+        }
+        fabAddPhotoKategori.setOnClickListener {
+            getImage.launch("image/*")
         }
     }
 
@@ -187,7 +257,7 @@ class KategoriActivity : AppCompatActivity() {
         }
     }
 
-    private fun simpanKategori() {
+    private fun simpanData() {
         val namaKategori = etNamaKategori.text.toString().trim()
         val hargaString = etHargaKategori.text.toString().replace(".", "").trim()
         val stokString = etStokKategori.text.toString().trim()
@@ -197,7 +267,6 @@ class KategoriActivity : AppCompatActivity() {
             Toast.makeText(this, "Pilih jenis kategori", Toast.LENGTH_SHORT).show()
             return
         }
-        val jenisKategori = if (selectedJenisId == R.id.rbMakanan) "Makanan" else "Minuman"
 
         if (namaKategori.isEmpty() || hargaString.isEmpty() || stokString.isEmpty()) {
             Toast.makeText(this, "Nama, Harga, dan Stok harus diisi", Toast.LENGTH_SHORT).show()
@@ -206,14 +275,11 @@ class KategoriActivity : AppCompatActivity() {
 
         val hargaKategori = hargaString.toLongOrNull() ?: 0L
         val stokKategori = stokString.toIntOrNull() ?: 0
-        val selectedStatusId = radioGroupStatus.checkedRadioButtonId
-        if (selectedStatusId == -1) {
-            Toast.makeText(this, "Pilih status kategori", Toast.LENGTH_SHORT).show()
-            return
-        }
+        val jenisKategori = if (selectedJenisId == R.id.rbMakanan) "Makanan" else "Minuman"
+        val status = if (radioGroupStatus.checkedRadioButtonId == R.id.rbAktif) "Aktif" else "Tidak Aktif"
 
-        val status = if (selectedStatusId == R.id.rbAktif) "Aktif" else "Tidak Aktif"
-        btnSimpan.isEnabled = false
+        loadingDialog.setMessage("Menyimpan data...")
+        loadingDialog.show()
 
         val isEdit = editKategori != null
         val myRef = if (isEdit) {
@@ -228,17 +294,22 @@ class KategoriActivity : AppCompatActivity() {
             myRef.key ?: ""
         }
 
+        // Use new image if selected, otherwise use old image
+        val finalFoto = imageBase64 ?: editKategori?.fotoKategori
+
         val kategoriData = ModelKategori(
             idKategori = kategoriId,
             namaKategori = namaKategori,
             jenisKategori = jenisKategori,
             hargaKategori = hargaKategori,
             stokKategori = stokKategori,
-            statusKategori = status
+            statusKategori = status,
+            fotoKategori = finalFoto
         )
 
         myRef.setValue(kategoriData)
             .addOnSuccessListener {
+                loadingDialog.dismiss()
                 if (!isEdit) {
                     val trollyRef = FirebaseDatabase.getInstance().getReference("users_data")
                         .child(userId).child("trolly").push()
@@ -257,7 +328,7 @@ class KategoriActivity : AppCompatActivity() {
                 finish()
             }
             .addOnFailureListener { error ->
-                btnSimpan.isEnabled = true
+                loadingDialog.dismiss()
                 Toast.makeText(this, "Gagal menyimpan: ${error.message}", Toast.LENGTH_SHORT).show()
             }
     }

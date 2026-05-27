@@ -6,8 +6,10 @@ import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.semester2.R
 import com.example.semester2.kategori.ModelKategori
+import com.google.android.material.imageview.ShapeableImageView
 import java.text.NumberFormat
 import java.util.Locale
 
@@ -29,6 +31,7 @@ class KategoriAdapter(private var list: ArrayList<ModelKategori>) :
         val tvJenis: TextView = view.findViewById(R.id.tv_jenis_kategori)
         val tvHarga: TextView = view.findViewById(R.id.tv_harga_kategori)
         val cbStatus: CheckBox = view.findViewById(R.id.cb_status)
+        val ivFoto: ShapeableImageView = view.findViewById(R.id.iv_item_foto_kategori)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -48,6 +51,15 @@ class KategoriAdapter(private var list: ArrayList<ModelKategori>) :
         holder.cbStatus.isChecked = isAktif
         holder.cbStatus.isClickable = false
         holder.cbStatus.isFocusable = false
+
+        if (!item.fotoKategori.isNullOrEmpty()) {
+            Glide.with(holder.itemView.context)
+                .load(item.fotoKategori)
+                .placeholder(R.drawable.category)
+                .into(holder.ivFoto)
+        } else {
+            holder.ivFoto.setImageResource(R.drawable.category)
+        }
 
         holder.itemView.setOnClickListener {
             listener?.onItemClick(item)

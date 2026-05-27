@@ -12,15 +12,15 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="15dp">
+        android:padding="12dp">
 
-        <ImageView
-            android:id="@+id/img_icon_kategori"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:background="@color/icon_bg_blue"
-            android:padding="8dp"
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/iv_item_foto_kategori"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:scaleType="centerCrop"
             android:src="@drawable/category"
+            app:shapeAppearanceOverlay="@style/ShapeAppearance.MediumComponent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -30,20 +30,12 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
+            android:layout_marginEnd="8dp"
             android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/container_status_kategori"
-            app:layout_constraintStart_toEndOf="@id/img_icon_kategori"
+            app:layout_constraintStart_toEndOf="@id/iv_item_foto_kategori"
             app:layout_constraintTop_toTopOf="parent">
-
-            <TextView
-                android:id="@+id/tv_id_kategori"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="ID: K001"
-                android:textColor="@color/text_id"
-                android:textSize="10sp" />
 
             <TextView
                 android:id="@+id/tv_kategori"
@@ -59,6 +51,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Jenis: -"
+                android:textColor="@color/text_secondary"
+                android:textSize="13sp" />
+
+            <TextView
+                android:id="@+id/tv_stok_kategori"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Stok: 0"
                 android:textColor="@color/text_secondary"
                 android:textSize="13sp" />
 
@@ -91,7 +91,7 @@
                 android:text="Aktif"
                 android:textColor="@color/accent_green"
                 android:buttonTint="@color/accent_green"
-                android:textSize="14sp"
+                android:textSize="12sp"
                 android:clickable="false"
                 android:focusable="false"/>
 
