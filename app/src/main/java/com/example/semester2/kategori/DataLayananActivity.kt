@@ -37,7 +37,6 @@ class DataLayananActivity : AppCompatActivity() {
         adapter.setOnItemClickListener(object : DataLayananAdapter.OnItemClickListener {
             override fun onItemClick(model: ModelLayanan) {
                 val intent = Intent(this@DataLayananActivity, LayananActivity::class.java)
-                intent.putExtra("EXTRA_LAYANAN", model)
                 startActivity(intent)
             }
         })
