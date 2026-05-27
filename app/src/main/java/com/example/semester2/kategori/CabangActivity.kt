@@ -1,8 +1,9 @@
 package com.example.semester2.kategori
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
+import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
 import android.widget.Button
 import android.widget.RadioButton
 import android.widget.RadioGroup
@@ -25,7 +26,7 @@ class CabangActivity : AppCompatActivity() {
 
     private lateinit var tvTitleCabang: TextView
     private lateinit var etNamaCabang: TextInputEditText
-    private lateinit var etAlamatCabang: TextInputEditText
+    private lateinit var spAlamatCabang: AutoCompleteTextView
     private lateinit var etTelpCabang: TextInputEditText
     private lateinit var radioGroupStatusCabang: RadioGroup
     private lateinit var rbAktifCabang: RadioButton
@@ -37,6 +38,8 @@ class CabangActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
     private var userId: String = ""
     private var editCabang: ModelCabang? = null
+
+    private val pilihanCabang = arrayOf("Surakarta", "Sukoharjo", "Mojosongo")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,6 +56,7 @@ class CabangActivity : AppCompatActivity() {
         }
 
         initView()
+        setupDropdown()
         setupFirebase()
         setupListeners()
         checkEditMode()
@@ -61,7 +65,7 @@ class CabangActivity : AppCompatActivity() {
     private fun initView() {
         tvTitleCabang = findViewById(R.id.tvTitleCabang)
         etNamaCabang = findViewById(R.id.etNamaCabang)
-        etAlamatCabang = findViewById(R.id.etAlamatCabang)
+        spAlamatCabang = findViewById(R.id.spAlamatCabang)
         etTelpCabang = findViewById(R.id.etTelpCabang)
         radioGroupStatusCabang = findViewById(R.id.radioGroupStatusCabang)
         rbAktifCabang = findViewById(R.id.rbAktifCabang)
@@ -77,6 +81,11 @@ class CabangActivity : AppCompatActivity() {
         }
     }
 
+    private fun setupDropdown() {
+        val adapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, pilihanCabang)
+        spAlamatCabang.setAdapter(adapter)
+    }
+
     private fun checkEditMode() {
         if (intent.hasExtra("EXTRA_CABANG")) {
             editCabang = IntentCompat.getParcelableExtra(intent, "EXTRA_CABANG", ModelCabang::class.java)
@@ -90,7 +99,7 @@ class CabangActivity : AppCompatActivity() {
             tvTitleCabang.text = "Edit Cabang"
             btnSimpanCabang.text = "Perbarui Cabang"
             etNamaCabang.setText(cabang.namaCabang)
-            etAlamatCabang.setText(cabang.alamatCabang)
+            spAlamatCabang.setText(cabang.alamatCabang, false)
             etTelpCabang.setText(cabang.teleponCabang)
             
             if (cabang.statusCabang?.equals("Aktif", ignoreCase = true) == true) {
@@ -140,7 +149,7 @@ class CabangActivity : AppCompatActivity() {
 
     private fun simpanCabang() {
         val nama = etNamaCabang.text.toString().trim()
-        val alamat = etAlamatCabang.text.toString().trim()
+        val alamat = spAlamatCabang.text.toString().trim()
         val telp = etTelpCabang.text.toString().trim()
 
         if (nama.isEmpty() || alamat.isEmpty() || telp.isEmpty()) {

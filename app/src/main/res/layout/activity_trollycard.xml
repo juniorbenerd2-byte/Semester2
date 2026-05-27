@@ -14,13 +14,13 @@
         android:layout_height="wrap_content"
         android:padding="16dp">
 
-        <ImageView
+        <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/img_trolly_item"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:background="@color/icon_bg_yellow"
-            android:padding="8dp"
-            android:src="@drawable/trolly"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/category"
+            app:shapeAppearanceOverlay="@style/ShapeAppearance.MediumComponent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -81,8 +81,10 @@
                 android:id="@+id/btn_minus_trolly"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
                 android:contentDescription="Kurangi"
-                android:src="@drawable/back" />
+                android:src="@drawable/back"
+                app:tint="@color/text_primary" />
 
             <TextView
                 android:id="@+id/tv_qty_trolly"
@@ -98,8 +100,10 @@
                 android:id="@+id/btn_plus_trolly"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
                 android:contentDescription="Tambah"
-                android:src="@drawable/next" />
+                android:src="@drawable/next"
+                app:tint="@color/text_primary" />
 
         </LinearLayout>
 

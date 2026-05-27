@@ -63,26 +63,26 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Alamat Cabang :"
+                    android:text="Tempat Cabang :"
                     android:textColor="@color/text_primary"
                     android:textStyle="bold"
                     android:layout_marginTop="16dp"
                     android:layout_marginBottom="8dp"/>
 
                 <com.google.android.material.textfield.TextInputLayout
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:boxStrokeColor="#10B981"
                     app:hintEnabled="false">
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etAlamatCabang"
+                    <AutoCompleteTextView
+                        android:id="@+id/spAlamatCabang"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Masukkan alamat lengkap"
-                        android:inputType="textPostalAddress"
-                        android:textColor="@color/text_primary"/>
+                        android:hint="Pilih tempat cabang"
+                        android:inputType="none"
+                        android:textColor="@color/text_primary" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <TextView

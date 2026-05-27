@@ -9,5 +9,6 @@ data class ModelTrolly(
     var namaProduk: String? = null,
     var jumlah: Int? = 0,
     var harga: Long? = 0L,
-    var totalHarga: Long? = 0L
+    var totalHarga: Long? = 0L,
+    var fotoProduk: String? = null
 ) : Parcelable

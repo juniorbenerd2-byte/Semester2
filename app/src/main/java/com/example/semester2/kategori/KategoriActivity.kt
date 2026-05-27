@@ -18,7 +18,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.IntentCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.bumptech.glide.Glide
 import com.example.semester2.R
 import com.example.semester2.model.ModelTrolly
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -116,15 +115,11 @@ class KategoriActivity : AppCompatActivity() {
         try {
             val inputStream: InputStream? = contentResolver.openInputStream(uri)
             val bitmap = BitmapFactory.decodeStream(inputStream)
-            
-            // Resize to prevent database size limits (Base64 is ~33% larger than binary)
             val resizedBitmap = resizeBitmap(bitmap, 400)
-            
             val outputStream = ByteArrayOutputStream()
             resizedBitmap.compress(Bitmap.CompressFormat.JPEG, 70, outputStream)
             val bytes = outputStream.toByteArray()
             imageBase64 = Base64.encodeToString(bytes, Base64.DEFAULT)
-            
             ivFotoKategori.setImageBitmap(resizedBitmap)
         } catch (e: Exception) {
             Toast.makeText(this, "Gagal memproses gambar: ${e.message}", Toast.LENGTH_SHORT).show()
@@ -148,27 +143,21 @@ class KategoriActivity : AppCompatActivity() {
     private fun setupHargaFormatter() {
         etHargaKategori.addTextChangedListener(object : TextWatcher {
             private var current = ""
-
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-
             override fun afterTextChanged(s: Editable?) {
                 if (s.toString() != current) {
                     etHargaKategori.removeTextChangedListener(this)
-
                     val cleanString = s.toString().replace(".", "")
-
                     if (cleanString.isNotEmpty()) {
                         try {
                             val parsed = cleanString.toLong()
                             val formatted = NumberFormat.getNumberInstance(Locale("id", "ID")).format(parsed)
-
                             current = formatted
                             etHargaKategori.setText(formatted)
                             etHargaKategori.setSelection(formatted.length)
                         } catch (e: Exception) {}
                     }
-
                     etHargaKategori.addTextChangedListener(this)
                 }
             }
@@ -188,23 +177,19 @@ class KategoriActivity : AppCompatActivity() {
             tvTitleKategori.text = "Edit Kategori"
             btnSimpan.text = "Perbarui"
             etNamaKategori.setText(kategori.namaKategori)
-            
             if (kategori.jenisKategori?.equals("Makanan", ignoreCase = true) == true) {
                 rbMakanan.isChecked = true
             } else if (kategori.jenisKategori?.equals("Minuman", ignoreCase = true) == true) {
                 rbMinuman.isChecked = true
             }
-
             val formattedHarga = NumberFormat.getNumberInstance(Locale("id", "ID")).format(kategori.hargaKategori)
             etHargaKategori.setText(formattedHarga)
             etStokKategori.setText(kategori.stokKategori.toString())
-            
             if (kategori.statusKategori?.equals("Aktif", ignoreCase = true) == true) {
                 rbAktif.isChecked = true
             } else {
                 rbTidakAktif.isChecked = true
             }
-
             if (!kategori.fotoKategori.isNullOrEmpty()) {
                 try {
                     val imageBytes = Base64.decode(kategori.fotoKategori, Base64.DEFAULT)
@@ -222,24 +207,16 @@ class KategoriActivity : AppCompatActivity() {
     }
 
     private fun setupListeners() {
-        btnSimpan.setOnClickListener {
-            simpanData()
-        }
-        btnHapusKategori.setOnClickListener {
-            showDeleteDialog()
-        }
-        fabAddPhotoKategori.setOnClickListener {
-            getImage.launch("image/*")
-        }
+        btnSimpan.setOnClickListener { simpanData() }
+        btnHapusKategori.setOnClickListener { showDeleteDialog() }
+        fabAddPhotoKategori.setOnClickListener { getImage.launch("image/*") }
     }
 
     private fun showDeleteDialog() {
         AlertDialog.Builder(this)
             .setTitle("Hapus Kategori")
             .setMessage("Apakah Anda yakin ingin menghapus kategori ini?")
-            .setPositiveButton("Hapus") { _, _ ->
-                hapusKategori()
-            }
+            .setPositiveButton("Hapus") { _, _ -> hapusKategori() }
             .setNegativeButton("Batal", null)
             .show()
     }
@@ -261,15 +238,9 @@ class KategoriActivity : AppCompatActivity() {
         val namaKategori = etNamaKategori.text.toString().trim()
         val hargaString = etHargaKategori.text.toString().replace(".", "").trim()
         val stokString = etStokKategori.text.toString().trim()
-
         val selectedJenisId = radioGroupJenisKategori.checkedRadioButtonId
-        if (selectedJenisId == -1) {
-            Toast.makeText(this, "Pilih jenis kategori", Toast.LENGTH_SHORT).show()
-            return
-        }
-
-        if (namaKategori.isEmpty() || hargaString.isEmpty() || stokString.isEmpty()) {
-            Toast.makeText(this, "Nama, Harga, dan Stok harus diisi", Toast.LENGTH_SHORT).show()
+        if (selectedJenisId == -1 || namaKategori.isEmpty() || hargaString.isEmpty() || stokString.isEmpty()) {
+            Toast.makeText(this, "Semua data harus diisi", Toast.LENGTH_SHORT).show()
             return
         }
 
@@ -277,59 +248,30 @@ class KategoriActivity : AppCompatActivity() {
         val stokKategori = stokString.toIntOrNull() ?: 0
         val jenisKategori = if (selectedJenisId == R.id.rbMakanan) "Makanan" else "Minuman"
         val status = if (radioGroupStatus.checkedRadioButtonId == R.id.rbAktif) "Aktif" else "Tidak Aktif"
+        val finalFoto = imageBase64 ?: editKategori?.fotoKategori
 
         loadingDialog.setMessage("Menyimpan data...")
         loadingDialog.show()
 
         val isEdit = editKategori != null
-        val myRef = if (isEdit) {
-            database.child(editKategori!!.idKategori!!)
-        } else {
-            database.push()
-        }
+        val myRef = if (isEdit) database.child(editKategori!!.idKategori!!) else database.push()
+        val kategoriId = if (isEdit) editKategori!!.idKategori!! else myRef.key ?: ""
 
-        val kategoriId = if (isEdit) {
-            editKategori!!.idKategori!!
-        } else {
-            myRef.key ?: ""
-        }
+        val kategoriData = ModelKategori(kategoriId, namaKategori, jenisKategori, hargaKategori, stokKategori, status, finalFoto)
 
-        // Use new image if selected, otherwise use old image
-        val finalFoto = imageBase64 ?: editKategori?.fotoKategori
-
-        val kategoriData = ModelKategori(
-            idKategori = kategoriId,
-            namaKategori = namaKategori,
-            jenisKategori = jenisKategori,
-            hargaKategori = hargaKategori,
-            stokKategori = stokKategori,
-            statusKategori = status,
-            fotoKategori = finalFoto
-        )
-
-        myRef.setValue(kategoriData)
-            .addOnSuccessListener {
-                loadingDialog.dismiss()
-                if (!isEdit) {
-                    val trollyRef = FirebaseDatabase.getInstance().getReference("users_data")
-                        .child(userId).child("trolly").push()
-                    val trollyId = trollyRef.key ?: ""
-                    val trollyData = ModelTrolly(
-                        idTrolly = trollyId,
-                        namaProduk = namaKategori,
-                        jumlah = 1,
-                        harga = hargaKategori,
-                        totalHarga = hargaKategori
-                    )
-                    trollyRef.setValue(trollyData)
-                }
-                val msg = if (isEdit) "Kategori berhasil diperbarui" else "Kategori berhasil disimpan"
-                Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
-                finish()
+        myRef.setValue(kategoriData).addOnSuccessListener {
+            loadingDialog.dismiss()
+            if (!isEdit) {
+                val trollyRef = FirebaseDatabase.getInstance().getReference("users_data").child(userId).child("trolly").push()
+                val trollyId = trollyRef.key ?: ""
+                val trollyData = ModelTrolly(trollyId, namaKategori, 1, hargaKategori, hargaKategori, finalFoto)
+                trollyRef.setValue(trollyData)
             }
-            .addOnFailureListener { error ->
-                loadingDialog.dismiss()
-                Toast.makeText(this, "Gagal menyimpan: ${error.message}", Toast.LENGTH_SHORT).show()
-            }
+            Toast.makeText(this, if (isEdit) "Kategori diperbarui" else "Kategori disimpan", Toast.LENGTH_SHORT).show()
+            finish()
+        }.addOnFailureListener {
+            loadingDialog.dismiss()
+            Toast.makeText(this, "Gagal: ${it.message}", Toast.LENGTH_SHORT).show()
+        }
     }
 }
