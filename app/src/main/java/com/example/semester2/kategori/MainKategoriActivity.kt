@@ -93,10 +93,6 @@ class MainKategoriActivity : AppCompatActivity() {
         findViewById<CardView>(R.id.cardPegawai).setOnClickListener {
             startActivity(Intent(this, DataPegawaiActivity::class.java))
         }
-        
-        findViewById<CardView>(R.id.cardLayanan).setOnClickListener {
-            startActivity(Intent(this, DataLayananActivity::class.java))
-        }
 
         findViewById<CardView>(R.id.cardKategori).setOnClickListener {
             startActivity(Intent(this, DataKategoriActivity::class.java))

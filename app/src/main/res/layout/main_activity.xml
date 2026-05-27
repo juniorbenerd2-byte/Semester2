@@ -248,40 +248,6 @@
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
-
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/cardLayanan"
-                android:layout_width="0dp"
-                android:layout_height="85dp"
-                android:layout_margin="4dp"
-                android:layout_columnWeight="1"
-                app:cardBackgroundColor="@color/card_bg_color"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="2dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:orientation="vertical">
-
-                    <ImageView
-                        android:layout_width="28dp"
-                        android:layout_height="28dp"
-                        android:src="@drawable/service" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
-                        android:text="Layanan"
-                        android:textColor="@color/text_primary"
-                        android:textSize="11sp"
-                        android:textStyle="bold" />
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
-
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardKategori"
                 android:layout_width="0dp"
