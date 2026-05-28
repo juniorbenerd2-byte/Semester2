@@ -1,8 +1,9 @@
 package com.example.semester2.kategori
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
+import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
 import android.widget.Button
 import android.widget.RadioButton
 import android.widget.RadioGroup
@@ -15,11 +16,15 @@ import androidx.core.content.IntentCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.semester2.R
+import com.example.semester2.model.ModelCabang
 import com.example.semester2.model.ModelPegawai
 import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 
 class PegawaiActivity : AppCompatActivity() {
 
@@ -27,6 +32,7 @@ class PegawaiActivity : AppCompatActivity() {
     private lateinit var etNamaPegawai: TextInputEditText
     private lateinit var etAlamatPegawai: TextInputEditText
     private lateinit var etUmurPegawai: TextInputEditText
+    private lateinit var acPilihCabang: AutoCompleteTextView
     private lateinit var radioGroupGender: RadioGroup
     private lateinit var rbLakiLaki: RadioButton
     private lateinit var rbPerempuan: RadioButton
@@ -41,9 +47,14 @@ class PegawaiActivity : AppCompatActivity() {
     private lateinit var btnHapusPegawai: Button
 
     private lateinit var database: DatabaseReference
+    private lateinit var cabangRef: DatabaseReference
     private lateinit var auth: FirebaseAuth
     private var userId: String = ""
     private var editPegawai: ModelPegawai? = null
+    
+    private var listCabang = ArrayList<ModelCabang>()
+    private var selectedIdCabang: String? = null
+    private var selectedNamaCabang: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,6 +72,7 @@ class PegawaiActivity : AppCompatActivity() {
 
         initView()
         setupFirebase()
+        fetchCabangData()
         setupListeners()
         checkEditMode()
     }
@@ -70,6 +82,7 @@ class PegawaiActivity : AppCompatActivity() {
         etNamaPegawai = findViewById(R.id.etNamaPegawai)
         etAlamatPegawai = findViewById(R.id.etAlamatPegawai)
         etUmurPegawai = findViewById(R.id.etUmurPegawai)
+        acPilihCabang = findViewById(R.id.acPilihCabang)
         radioGroupGender = findViewById(R.id.radioGroupGender)
         rbLakiLaki = findViewById(R.id.rbLakiLaki)
         rbPerempuan = findViewById(R.id.rbPerempuan)
@@ -91,6 +104,36 @@ class PegawaiActivity : AppCompatActivity() {
         }
     }
 
+    private fun fetchCabangData() {
+        cabangRef.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                listCabang.clear()
+                val namaCabangList = ArrayList<String>()
+                for (data in snapshot.children) {
+                    val cabang = data.getValue(ModelCabang::class.java)
+                    cabang?.let {
+                        listCabang.add(it)
+                        it.namaCabang?.let { nama -> namaCabangList.add(nama) }
+                    }
+                }
+                
+                val adapter = ArrayAdapter(this@PegawaiActivity, android.R.layout.simple_dropdown_item_1line, namaCabangList)
+                acPilihCabang.setAdapter(adapter)
+                
+                // If editing, make sure the branch name is shown
+                editPegawai?.namaCabang?.let {
+                    acPilihCabang.setText(it, false)
+                    selectedNamaCabang = it
+                    selectedIdCabang = editPegawai?.idCabang
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Toast.makeText(this@PegawaiActivity, "Gagal mengambil data cabang", Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
+
     private fun checkEditMode() {
         if (intent.hasExtra("EXTRA_PEGAWAI")) {
             editPegawai = IntentCompat.getParcelableExtra(intent, "EXTRA_PEGAWAI", ModelPegawai::class.java)
@@ -106,6 +149,10 @@ class PegawaiActivity : AppCompatActivity() {
             etNamaPegawai.setText(pegawai.namaPegawai)
             etAlamatPegawai.setText(pegawai.alamatPegawai)
             etUmurPegawai.setText(pegawai.umurPegawai?.toString())
+            
+            selectedIdCabang = pegawai.idCabang
+            selectedNamaCabang = pegawai.namaCabang
+            acPilihCabang.setText(pegawai.namaCabang, false)
 
             if (pegawai.genderPegawai?.equals("Laki-laki", ignoreCase = true) == true) {
                 rbLakiLaki.isChecked = true
@@ -128,10 +175,19 @@ class PegawaiActivity : AppCompatActivity() {
     }
 
     private fun setupFirebase() {
-        database = FirebaseDatabase.getInstance().getReference("users_data").child(userId).child("pegawai")
+        val rootRef = FirebaseDatabase.getInstance().getReference("users_data").child(userId)
+        database = rootRef.child("pegawai")
+        cabangRef = rootRef.child("cabang")
     }
 
     private fun setupListeners() {
+        acPilihCabang.setOnItemClickListener { parent, _, position, _ ->
+            val selectedNama = parent.getItemAtPosition(position).toString()
+            val selectedCabang = listCabang.find { it.namaCabang == selectedNama }
+            selectedIdCabang = selectedCabang?.idCabang
+            selectedNamaCabang = selectedCabang?.namaCabang
+        }
+
         btnSimpanPegawai.setOnClickListener {
             simpanPegawai()
         }
@@ -174,6 +230,11 @@ class PegawaiActivity : AppCompatActivity() {
             return
         }
         val umur = umurStr.toIntOrNull()
+
+        if (selectedIdCabang == null) {
+            Toast.makeText(this, "Pilih cabang terlebih dahulu", Toast.LENGTH_SHORT).show()
+            return
+        }
 
         val checkedGenderId = radioGroupGender.checkedRadioButtonId
         if (checkedGenderId == -1) {
@@ -222,7 +283,9 @@ class PegawaiActivity : AppCompatActivity() {
             statusPegawai = status,
             alamatPegawai = alamat,
             umurPegawai = umur,
-            genderPegawai = gender
+            genderPegawai = gender,
+            idCabang = selectedIdCabang,
+            namaCabang = selectedNamaCabang
         )
 
         myRef.setValue(data)

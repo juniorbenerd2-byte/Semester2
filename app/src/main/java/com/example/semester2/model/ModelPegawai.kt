@@ -11,5 +11,7 @@ data class ModelPegawai(
     var statusPegawai: String? = null,
     var alamatPegawai: String? = null,
     var umurPegawai: Int? = null,
-    var genderPegawai: String? = null
+    var genderPegawai: String? = null,
+    var idCabang: String? = null,
+    var namaCabang: String? = null
 ) : Parcelable

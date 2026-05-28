@@ -26,6 +26,7 @@ class DataPegawaiAdapter(private var list: ArrayList<ModelPegawai>) :
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val tvIdPegawai: TextView = view.findViewById(R.id.tv_id_pegawai)
         val tvNamaPegawai: TextView = view.findViewById(R.id.tv_nama_pegawai)
+        val tvCabangPegawai: TextView = view.findViewById(R.id.tv_cabang_pegawai)
         val tvDetailPegawai: TextView = view.findViewById(R.id.tv_detail_pegawai)
         val tvAlamatPegawai: TextView = view.findViewById(R.id.tv_alamat_pegawai)
         val tvRolePegawai: TextView = view.findViewById(R.id.tv_role_pegawai)
@@ -43,6 +44,7 @@ class DataPegawaiAdapter(private var list: ArrayList<ModelPegawai>) :
         
         holder.tvIdPegawai.text = "ID: ${item.idPegawai ?: "-"}"
         holder.tvNamaPegawai.text = item.namaPegawai ?: "-"
+        holder.tvCabangPegawai.text = "Cabang: ${item.namaCabang ?: "-"}"
         
         val gender = item.genderPegawai ?: "-"
         val umur = item.umurPegawai?.toString() ?: "-"
