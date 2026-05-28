@@ -59,17 +59,6 @@
                 app:strokeColor="@color/accent_yellow"
                 app:strokeWidth="2dp" />
 
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/fabEditPhoto"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignBottom="@id/ivProfilePicture"
-                android:layout_alignEnd="@id/ivProfilePicture"
-                android:src="@android:drawable/ic_menu_camera"
-                app:fabCustomSize="40dp"
-                app:backgroundTint="@color/accent_yellow"
-                app:tint="@color/white"
-                android:contentDescription="Ubah Foto" />
         </RelativeLayout>
 
         <!-- Form Section -->
