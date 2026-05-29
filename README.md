@@ -15,6 +15,9 @@
 
 ---
 
+## <img width="498" height="280" alt="TjJackson3tGIF" src="https://github.com/user-attachments/assets/78ac5b50-988a-4a18-94ab-a427a25f9f59" />
+
+
 ## 📋 Deskripsi
 
 **Toko Junior** adalah aplikasi Android Point of Sale (POS) yang dirancang untuk membantu pengelolaan toko secara menyeluruh. Aplikasi ini menyediakan fitur lengkap mulai dari manajemen produk berdasarkan kategori, sistem keranjang belanja (trolley), proses checkout, pencetakan nota via printer Bluetooth, hingga laporan penjualan harian. Dilengkapi juga dengan sistem e-wallet internal untuk top-up saldo dan transfer antar pengguna.
@@ -26,9 +29,6 @@
 ### 🔐 Autentikasi
 - **Login & Register** — Sistem autentikasi pengguna menggunakan Firebase Authentication
 - **Auto-login** — Pengguna yang sudah login akan langsung masuk ke halaman utama
-  <img width="240" height="250" alt="image" src="https://github.com/user-attachments/assets/d82f7e89-faf8-48b2-950d-1452cb021fb4" />
-
-
 
 ### 🏠 Dashboard Utama
 - **Salam & Saldo** — Menampilkan greeting personal dan saldo e-wallet pengguna
