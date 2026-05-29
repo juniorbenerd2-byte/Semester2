@@ -15,7 +15,10 @@
 
 ---
 
-## <img width="498" height="280" alt="TjJackson3tGIF" src="https://github.com/user-attachments/assets/78ac5b50-988a-4a18-94ab-a427a25f9f59" />
+##    Screenshot
+<img width="333" height="600" alt="{CB05B160-064E-443F-BBDC-33C6BA40996B}" src="https://github.com/user-attachments/assets/664b5160-52f6-437a-a7bf-01b0631e4c6f" />
+
+
 
 
 ## 📋 Deskripsi
