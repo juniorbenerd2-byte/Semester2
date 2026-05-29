@@ -1,4 +1,4 @@
-# 🏪 Toko Junior — Aplikasi Kasir & Manajemen Toko
+# 🏪 CashierKu — Aplikasi Kasir & Manajemen Toko
 
 <p align="center">
   <strong>Aplikasi Point of Sale (POS) berbasis Android untuk manajemen toko, transaksi keuangan, dan pencetakan nota via Bluetooth.</strong>
