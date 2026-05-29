@@ -19,7 +19,7 @@
 
 ## 📋 Deskripsi
 
-**Toko Junior** adalah aplikasi Android Point of Sale (POS) yang dirancang untuk membantu pengelolaan toko secara menyeluruh. Aplikasi ini menyediakan fitur lengkap mulai dari manajemen produk berdasarkan kategori, sistem keranjang belanja (trolley), proses checkout, pencetakan nota via printer Bluetooth, hingga laporan penjualan harian. Dilengkapi juga dengan sistem e-wallet internal untuk top-up saldo dan transfer antar pengguna.
+**CashierKu** adalah aplikasi Android Point of Sale (POS) yang dirancang untuk membantu pengelolaan toko secara menyeluruh. Aplikasi ini menyediakan fitur lengkap mulai dari manajemen produk berdasarkan kategori, sistem keranjang belanja (trolley), proses checkout, pencetakan nota via printer Bluetooth, hingga laporan penjualan harian. Dilengkapi juga dengan sistem e-wallet internal untuk top-up saldo dan transfer antar pengguna.
 
 ---
 
