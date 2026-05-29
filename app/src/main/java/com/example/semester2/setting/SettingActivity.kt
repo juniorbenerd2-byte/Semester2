@@ -1,6 +1,5 @@
 package com.example.semester2.setting
 
-import android.app.AlertDialog
 import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
@@ -21,7 +20,6 @@ import com.example.semester2.auth.LoginActivity
 import com.google.android.material.imageview.ShapeableImageView
 import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseAuthRecentLoginRequiredException
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
@@ -132,53 +130,6 @@ class SettingActivity : AppCompatActivity() {
         }
 
         findViewById<Button>(R.id.btnSimpanPerubahan)?.setOnClickListener { simpanPerubahan() }
-
-        findViewById<CardView>(R.id.cardDeleteAccount)?.setOnClickListener {
-            AlertDialog.Builder(this)
-                .setTitle("Hapus Akun Permanen")
-                .setMessage("Tindakan ini tidak bisa dibatalkan. Semua data Anda akan dihapus selamanya. Anda tidak akan bisa login lagi dengan akun ini.")
-                .setPositiveButton("Hapus Sekarang") { _, _ -> hapusAkunPermanen() }
-                .setNegativeButton("Batal", null)
-                .show()
-        }
-    }
-
-    private fun hapusAkunPermanen() {
-        val user = auth.currentUser ?: return
-        val userId = user.uid
-        loadingDialog.setMessage("Menghapus akun dan data...")
-        loadingDialog.show()
-
-        // LANGKAH 1: Hapus data di database selagi masih ter-autentikasi
-        val dbRef = FirebaseDatabase.getInstance().reference
-        val updates = HashMap<String, Any?>()
-        updates["users/$userId"] = null
-        updates["users_data/$userId"] = null
-
-        dbRef.updateChildren(updates).addOnCompleteListener { dbTask ->
-            if (dbTask.isSuccessful) {
-                // LANGKAH 2: Hapus user dari Firebase Auth
-                user.delete().addOnCompleteListener { authTask ->
-                    loadingDialog.dismiss()
-                    if (authTask.isSuccessful) {
-                        Toast.makeText(this, "Akun telah dihapus permanen.", Toast.LENGTH_LONG).show()
-                        val intent = Intent(this, LoginActivity::class.java)
-                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                        startActivity(intent)
-                        finish()
-                    } else {
-                        if (authTask.exception is FirebaseAuthRecentLoginRequiredException) {
-                            Toast.makeText(this, "Sesi lama terdeteksi. Silakan Logout dan Login kembali sebelum menghapus akun.", Toast.LENGTH_LONG).show()
-                        } else {
-                            Toast.makeText(this, "Gagal menghapus akun: ${authTask.exception?.message}", Toast.LENGTH_LONG).show()
-                        }
-                    }
-                }
-            } else {
-                loadingDialog.dismiss()
-                Toast.makeText(this, "Gagal menghapus data database.", Toast.LENGTH_SHORT).show()
-            }
-        }
     }
 
     private fun simpanPerubahan() {
