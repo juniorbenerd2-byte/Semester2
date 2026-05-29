@@ -16,7 +16,7 @@
 ---
 
 ##    Screenshot
-<img width="333" height="600" alt="{CB05B160-064E-443F-BBDC-33C6BA40996B}" src="https://github.com/user-attachments/assets/664b5160-52f6-437a-a7bf-01b0631e4c6f" />
+<img width="333" height="500" alt="{CB05B160-064E-443F-BBDC-33C6BA40996B}" src="https://github.com/user-attachments/assets/664b5160-52f6-437a-a7bf-01b0631e4c6f" />
 
 
 
