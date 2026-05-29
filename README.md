@@ -26,6 +26,10 @@
 ### 🔐 Autentikasi
 - **Login & Register** — Sistem autentikasi pengguna menggunakan Firebase Authentication
 - **Auto-login** — Pengguna yang sudah login akan langsung masuk ke halaman utama
+  <img width="1080" height="2436" alt="image" src="https://github.com/user-attachments/assets/abfb8375-8131-48f7-89c7-5710590d8b5a" />
+  <img width="1080" height="2436" alt="image" src="https://github.com/user-attachments/assets/63614374-e07f-4aae-b8d8-00065bf3a0d5" />
+
+
 
 ### 🏠 Dashboard Utama
 - **Salam & Saldo** — Menampilkan greeting personal dan saldo e-wallet pengguna
