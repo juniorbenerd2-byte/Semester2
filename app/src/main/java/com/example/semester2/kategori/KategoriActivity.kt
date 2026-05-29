@@ -49,6 +49,7 @@ class KategoriActivity : AppCompatActivity() {
     private lateinit var fabAddPhotoKategori: FloatingActionButton
 
     private lateinit var database: DatabaseReference
+    private lateinit var trollyRef: DatabaseReference
     private lateinit var auth: FirebaseAuth
     private var userId: String = ""
     private var editKategori: ModelKategori? = null
@@ -203,7 +204,9 @@ class KategoriActivity : AppCompatActivity() {
     }
 
     private fun setupFirebase() {
-        database = FirebaseDatabase.getInstance().getReference("users_data").child(userId).child("kategori")
+        val root = FirebaseDatabase.getInstance().getReference("users_data").child(userId)
+        database = root.child("kategori")
+        trollyRef = root.child("trolly")
     }
 
     private fun setupListeners() {
@@ -224,6 +227,7 @@ class KategoriActivity : AppCompatActivity() {
     private fun hapusKategori() {
         editKategori?.idKategori?.let { id ->
             database.child(id).removeValue()
+            trollyRef.child(id).removeValue()
                 .addOnSuccessListener {
                     Toast.makeText(this, "Kategori berhasil dihapus", Toast.LENGTH_SHORT).show()
                     finish()
@@ -260,13 +264,32 @@ class KategoriActivity : AppCompatActivity() {
         val kategoriData = ModelKategori(kategoriId, namaKategori, jenisKategori, hargaKategori, stokKategori, status, finalFoto)
 
         myRef.setValue(kategoriData).addOnSuccessListener {
-            loadingDialog.dismiss()
-            if (!isEdit) {
-                val trollyRef = FirebaseDatabase.getInstance().getReference("users_data").child(userId).child("trolly").push()
-                val trollyId = trollyRef.key ?: ""
-                val trollyData = ModelTrolly(trollyId, namaKategori, 1, hargaKategori, hargaKategori, finalFoto)
-                trollyRef.setValue(trollyData)
+            val itemTrollyRef = trollyRef.child(kategoriId)
+            
+            if (isEdit) {
+                val updateMap = mapOf(
+                    "namaProduk" to namaKategori,
+                    "jenisProduk" to jenisKategori,
+                    "harga" to hargaKategori,
+                    "fotoProduk" to finalFoto,
+                    "idKategori" to kategoriId
+                )
+                itemTrollyRef.updateChildren(updateMap)
+            } else {
+                val trollyData = ModelTrolly(
+                    idTrolly = kategoriId, 
+                    idKategori = kategoriId,
+                    namaProduk = namaKategori, 
+                    jenisProduk = jenisKategori,
+                    jumlah = 0, 
+                    harga = hargaKategori, 
+                    totalHarga = 0L, 
+                    fotoProduk = finalFoto
+                )
+                itemTrollyRef.setValue(trollyData)
             }
+
+            loadingDialog.dismiss()
             Toast.makeText(this, if (isEdit) "Kategori diperbarui" else "Kategori disimpan", Toast.LENGTH_SHORT).show()
             finish()
         }.addOnFailureListener {

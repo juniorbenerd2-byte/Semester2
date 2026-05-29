@@ -124,57 +124,81 @@ class TrollyActivity : AppCompatActivity() {
         } else {
             tvKosongTrolly.visibility = View.GONE
             rvTrolly.visibility = View.VISIBLE
-            btnCheckout.isEnabled = true
+            // Checkout hanya aktif jika ada barang yang dipilih (jumlah > 0)
+            btnCheckout.isEnabled = totalBarang > 0
             adapter.updateData(filteredList)
         }
     }
 
     private fun updateItemQty(item: ModelTrolly, diff: Int) {
         val newQty = (item.jumlah ?: 0) + diff
+        if (newQty < 0) return // Tidak boleh negatif
+
         val kategori = activeKategoriMap[item.namaProduk]
         if (diff > 0 && kategori != null && newQty > kategori.stokKategori) {
-            Toast.makeText(this, "Stok terbatas!", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Stok terbatas! Sisa: ${kategori.stokKategori}", Toast.LENGTH_SHORT).show()
             return
         }
+        
         val itemRef = myRef.child(item.idTrolly!!)
-        if (newQty <= 0) itemRef.removeValue()
-        else itemRef.updateChildren(mapOf("jumlah" to newQty, "totalHarga" to (item.harga ?: 0L) * newQty))
+        val updates = mapOf(
+            "jumlah" to newQty,
+            "totalHarga" to (item.harga ?: 0L) * newQty
+        )
+        itemRef.updateChildren(updates)
     }
 
     private fun checkout() {
-        val activeItems = rawTrollyList.filter { activeKategoriMap[it.namaProduk]?.statusKategori == "Aktif" }
-        if (activeItems.isEmpty()) return
+        // Hanya checkout item yang jumlahnya > 0
+        val activeItemsToBuy = rawTrollyList.filter { 
+            val kategori = activeKategoriMap[it.namaProduk]
+            kategori?.statusKategori == "Aktif" && (it.jumlah ?: 0) > 0 
+        }
+        
+        if (activeItemsToBuy.isEmpty()) {
+            Toast.makeText(this, "Pilih barang terlebih dahulu", Toast.LENGTH_SHORT).show()
+            return
+        }
 
         var totalHargaCheckout = 0L
-        activeItems.forEach { totalHargaCheckout += it.totalHarga ?: 0L }
+        activeItemsToBuy.forEach { totalHargaCheckout += it.totalHarga ?: 0L }
 
         val newReportRef = reportRef.push()
         val reportId = newReportRef.key
         val tanggal = SimpleDateFormat("dd MMMM yyyy, HH:mm", Locale("id", "ID")).format(Date())
 
-        // PENTING: Menyimpan 'items' agar riwayat nota bisa diprint lagi
         val reportData = ModelReport(
             idReport = reportId,
             totalPenjualan = totalHargaCheckout,
-            totalTransaksi = activeItems.size,
+            totalTransaksi = activeItemsToBuy.size,
             tanggalReport = tanggal,
-            items = activeItems
+            items = activeItemsToBuy
         )
 
         newReportRef.setValue(reportData).addOnSuccessListener {
-            activeItems.forEach { item ->
+            activeItemsToBuy.forEach { item ->
                 val kategori = activeKategoriMap[item.namaProduk]
                 if (kategori != null) {
-                    kategoriRef.child(kategori.idKategori!!).child("stokKategori").setValue(kategori.stokKategori - (item.jumlah ?: 0))
+                    // Update Stok di Kategori
+                    val sisaStok = kategori.stokKategori - (item.jumlah ?: 0)
+                    kategoriRef.child(kategori.idKategori!!).child("stokKategori").setValue(sisaStok)
                 }
-                myRef.child(item.idTrolly!!).removeValue()
+                
+                // Reset jumlah di Trolly menjadi 0 (jangan hapus itemnya)
+                myRef.child(item.idTrolly!!).updateChildren(mapOf(
+                    "jumlah" to 0,
+                    "totalHarga" to 0L
+                ))
             }
+            
             val intent = Intent(this, ReceiptActivity::class.java).apply {
-                putParcelableArrayListExtra("CHECKOUT_ITEMS", ArrayList(activeItems))
+                putParcelableArrayListExtra("CHECKOUT_ITEMS", ArrayList(activeItemsToBuy))
                 putExtra("TOTAL_HARGA", totalHargaCheckout)
             }
             startActivity(intent)
             finish()
+        }.addOnFailureListener {
+            Toast.makeText(this, "Checkout gagal: ${it.message}", Toast.LENGTH_SHORT).show()
         }
     }
 

@@ -27,6 +27,7 @@ class TrollyAdapter(
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val tvNamaProduk: TextView = view.findViewById(R.id.tv_nama_produk_trolly)
+        val tvJenisProduk: TextView = view.findViewById(R.id.tv_jenis_produk_trolly)
         val tvHargaSatuan: TextView = view.findViewById(R.id.tv_harga_satuan_trolly)
         val tvTotalHarga: TextView = view.findViewById(R.id.tv_total_harga_trolly)
         val tvQty: TextView = view.findViewById(R.id.tv_qty_trolly)
@@ -45,6 +46,7 @@ class TrollyAdapter(
         val item = list[position]
         
         holder.tvNamaProduk.text = item.namaProduk ?: "-"
+        holder.tvJenisProduk.text = item.jenisProduk ?: "-"
         holder.tvHargaSatuan.text = "${formatRupiah(item.harga ?: 0L)} / pcs"
         holder.tvTotalHarga.text = formatRupiah(item.totalHarga ?: 0L)
         holder.tvQty.text = (item.jumlah ?: 0).toString()
