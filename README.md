@@ -17,6 +17,14 @@
 
 ##    Screenshot
 
+<p align="center">
+  <img src="<img width="1080" height="2436" alt="image" src="https://github.com/user-attachments/assets/d4840668-7bac-4cf8-9979-afd1c5dbb352" />
+" width="25%"> <p align="center">
+  <img src="<img width="1080" height="2436" alt="image" src="https://github.com/user-attachments/assets/6a949b7a-d7f8-44a5-b9fe-35dfcdec89bc" />
+" width="25%">
+</p>
+</p>
+
 ## 📋 Deskripsi
 
 **CashierKu** adalah aplikasi Android Point of Sale (POS) yang dirancang untuk membantu pengelolaan toko secara menyeluruh. Aplikasi ini menyediakan fitur lengkap mulai dari manajemen produk berdasarkan kategori, sistem keranjang belanja (trolley), proses checkout, pencetakan nota via printer Bluetooth, hingga laporan penjualan harian. Dilengkapi juga dengan sistem e-wallet internal untuk top-up saldo dan transfer antar pengguna.
