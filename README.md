@@ -26,7 +26,6 @@
 ### 🔐 Autentikasi
 - **Login & Register** — Sistem autentikasi pengguna menggunakan Firebase Authentication
 - **Auto-login** — Pengguna yang sudah login akan langsung masuk ke halaman utama
-- **Logout & Hapus Akun** — Mendukung logout dan penghapusan akun permanen beserta seluruh datanya
 
 ### 🏠 Dashboard Utama
 - **Salam & Saldo** — Menampilkan greeting personal dan saldo e-wallet pengguna
