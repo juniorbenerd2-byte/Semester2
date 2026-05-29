@@ -26,8 +26,7 @@
 ### 🔐 Autentikasi
 - **Login & Register** — Sistem autentikasi pengguna menggunakan Firebase Authentication
 - **Auto-login** — Pengguna yang sudah login akan langsung masuk ke halaman utama
-  <img width="340" height="440" alt="image" src="https://github.com/user-attachments/assets/abfb8375-8131-48f7-89c7-5710590d8b5a" />  <img width="340" height="440" alt="image" src="https://github.com/user-attachments/assets/63614374-e07f-4aae-b8d8-00065bf3a0d5" />
-
+  <img width="240" height="250" alt="image" src="https://github.com/user-attachments/assets/d82f7e89-faf8-48b2-950d-1452cb021fb4" />
 
 
 
