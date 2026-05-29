@@ -15,22 +15,11 @@
 
 ---
 
-## Screenshot
+##    Screenshot
+<img width="333" height="600" alt="{CB05B160-064E-443F-BBDC-33C6BA40996B}" src="https://github.com/user-attachments/assets/664b5160-52f6-437a-a7bf-01b0631e4c6f" />
 
-The following is a gallery of all screenshots:
 
-<p align="center">
-  <img src="image_0.png" width="320" alt="Login Page">
-  <img src="image_1.png" width="320" alt="Register Page">
-  <img src="image_2.png" width="320" alt="Data Kategori Page">
-  <img src="image_3.png" width="320" alt="Tambah Kategori Page">
-  <img src="image_4.png" width="320" alt="Struk Pembayaran Page">
-  <img src="image_5.png" width="320" alt="Pengaturan Akun Page">
-  <img src="image_6.png" width="320" alt="Data Pegawai Page">
-  <img src="image_7.png" width="320" alt="Tambah Cabang Page">
-  <img src="image_8.png" width="320" alt="Top Up Saldo Page">
-  <img src="image_9.png" width="320" alt="Kirim Saldo Page">
-</p>
+
 
 ## 📋 Deskripsi
 
@@ -42,8 +31,6 @@ The following is a gallery of all screenshots:
 
 ### 🔐 Autentikasi
 - **Login & Register** — Sistem autentikasi pengguna menggunakan Firebase Authentication
-  <br><img src="image_0.png" width="320" alt="Login Page">
-  <br><img src="image_1.png" width="320" alt="Register Page">
 - **Auto-login** — Pengguna yang sudah login akan langsung masuk ke halaman utama
 
 ### 🏠 Dashboard Utama
@@ -53,21 +40,17 @@ The following is a gallery of all screenshots:
 
 ### 📦 Manajemen Produk & Kategori
 - **CRUD Kategori** — Tambah, edit, hapus kategori produk
-  <br><img src="image_2.png" width="320" alt="Data Kategori Page">
-  <br><img src="image_3.png" width="320" alt="Tambah Kategori Page">
 - **Manajemen Stok** — Pengelolaan stok produk per kategori dengan dukungan stok tanpa batas
 - **Status Produk** — Pengaturan status aktif/nonaktif kategori
 - **Upload Foto** — Upload gambar produk ke Firebase Storage
 
 ### 👥 Manajemen Pegawai
 - **Data Pegawai** — Kelola data pegawai termasuk nama, role, alamat, umur, dan gender
-  <br><img src="image_6.png" width="320" alt="Data Pegawai Page">
 - **Penugasan Cabang** — Penugasan pegawai ke cabang tertentu
 - **Status Pegawai** — Atur status aktif/nonaktif pegawai
 
 ### 🏢 Manajemen Cabang
 - **Data Cabang** — Kelola data cabang toko termasuk nama, alamat, dan telepon
-  <br><img src="image_7.png" width="320" alt="Tambah Cabang Page">
 - **Status Cabang** — Atur status aktif/nonaktif cabang
 
 ### 🛒 Trolley & Checkout
@@ -78,14 +61,11 @@ The following is a gallery of all screenshots:
 
 ### 💰 Transaksi Keuangan
 - **Top Up Saldo** — Isi ulang saldo e-wallet dengan format angka ribuan otomatis
-  <br><img src="image_8.png" width="320" alt="Top Up Saldo Page">
 - **Kirim Saldo** — Transfer saldo ke pengguna lain berdasarkan email
-  <br><img src="image_9.png" width="320" alt="Kirim Saldo Page">
 - **Minta Saldo** — Fitur permintaan saldo dari pengguna lain
 
 ### 🧾 Nota & Printer Bluetooth
 - **Struk Digital** — Tampilan struk belanja setelah checkout
-  <br><img src="image_4.png" width="320" alt="Struk Pembayaran Page">
 - **Cetak via Bluetooth** — Cetak nota langsung ke printer thermal Bluetooth
 - **Riwayat Nota** — Simpan dan cetak ulang nota dari riwayat transaksi
 - **Scan Perangkat** — Pencarian dan koneksi otomatis ke printer Bluetooth
@@ -98,7 +78,6 @@ The following is a gallery of all screenshots:
 
 ### ⚙️ Pengaturan
 - **Edit Profil** — Ubah nama dan data pengguna
-  <br><img src="image_5.png" width="320" alt="Pengaturan Akun Page">
 - **Tema Aplikasi** — Pilihan tema Terang, Gelap, atau Ikuti Sistem
 - **Hapus Akun** — Penghapusan akun permanen dengan konfirmasi
 
@@ -123,3 +102,166 @@ The following is a gallery of all screenshots:
 | **Arsitektur** | MVVM (ViewModel + LiveData) |
 
 ### Struktur Package
+
+```
+com.example.semester2/
+├── MainApplication.kt          # Application class (Theme initialization)
+├── auth/                        # Autentikasi
+│   ├── LoginActivity.kt        # Halaman login
+│   └── RegisterActivity.kt     # Halaman registrasi
+├── kategori/                    # Fitur utama
+│   ├── MainKategoriActivity.kt # Dashboard utama
+│   ├── KategoriActivity.kt     # CRUD kategori/produk
+│   ├── DataKategoriActivity.kt # Daftar kategori
+│   ├── PegawaiActivity.kt      # CRUD pegawai
+│   ├── DataPegawaiActivity.kt  # Daftar pegawai
+│   ├── CabangActivity.kt       # CRUD cabang
+│   ├── DataCabangActivity.kt   # Daftar cabang
+│   ├── TrollyActivity.kt       # Keranjang belanja
+│   ├── ReportActivity.kt       # Laporan penjualan
+│   ├── ReceiptActivity.kt      # Struk/nota digital
+│   └── PrinterActivity.kt      # Manajemen printer Bluetooth
+├── transaksi/                   # Transaksi keuangan
+│   ├── TopupActivity.kt        # Top up saldo
+│   ├── KirimActivity.kt        # Transfer saldo
+│   └── MintaActivity.kt        # Minta saldo
+├── setting/                     # Pengaturan
+│   ├── SettingActivity.kt      # Halaman pengaturan
+│   └── AccountActivity.kt     # Manajemen akun
+├── model/                       # Data model
+│   ├── ModelUser.kt            # Model pengguna
+│   ├── ModelProduk.kt          # Model produk
+│   ├── ModelKategori.kt        # Model kategori (lokal)
+│   ├── ModelLayanan.kt         # Model layanan
+│   ├── ModelPegawai.kt         # Model pegawai
+│   ├── ModelCabang.kt          # Model cabang
+│   ├── ModelTrolly.kt          # Model item keranjang
+│   └── ModelReport.kt          # Model laporan
+├── adapter/                     # RecyclerView Adapters
+│   ├── KategoriAdapter.kt     
+│   ├── DataKategoriAdapter.kt  
+│   ├── DataPegawaiAdapter.kt   
+│   ├── DetailCabangAdapter.kt  
+│   ├── TrollyAdapter.kt        
+│   └── ReportAdapter.kt        
+└── viewModels/                  # ViewModel (MVVM)
+    ├── DataKategoriViewModel.kt
+    ├── DataLayananViewModel.kt 
+    └── DataPegawaiViewModel.kt  
+```
+
+---
+
+## 🔧 Struktur Database Firebase
+
+```
+Firebase Realtime Database
+├── users/
+│   └── {userId}/
+│       ├── uid: String
+│       ├── nama: String
+│       ├── email: String
+│       ├── saldo: Long
+│       └── fotoProfil: String?
+│
+└── users_data/
+    └── {userId}/
+        ├── kategori/
+        │   └── {kategoriId}/
+        │       ├── idKategori: String
+        │       ├── namaKategori: String
+        │       ├── hargaKategori: Long
+        │       ├── stokKategori: Int
+        │       ├── statusKategori: String
+        │       └── fotoKategori: String?
+        ├── pegawai/
+        │   └── {pegawaiId}/
+        │       ├── namaPegawai: String
+        │       ├── rolePegawai: String
+        │       ├── statusPegawai: String
+        │       ├── alamatPegawai: String
+        │       ├── umurPegawai: Int
+        │       ├── genderPegawai: String
+        │       └── idCabang: String
+        ├── cabang/
+        │   └── {cabangId}/
+        │       ├── namaCabang: String
+        │       ├── alamatCabang: String
+        │       ├── teleponCabang: String
+        │       └── statusCabang: String
+        ├── trolly/
+        │   └── {trollyId}/
+        │       ├── namaProduk: String
+        │       ├── jumlah: Int
+        │       ├── harga: Long
+        │       ├── totalHarga: Long
+        │       └── fotoProduk: String?
+        └── report/
+            └── {reportId}/
+                ├── idReport: String
+                ├── totalPenjualan: Long
+                ├── totalTransaksi: Int
+                ├── tanggalReport: String
+                └── items: List<ModelTrolly>
+```
+
+---
+
+## 📱 Permissions
+
+Aplikasi ini membutuhkan izin berikut:
+
+| Permission | Kegunaan |
+|---|---|
+| `INTERNET` | Koneksi ke Firebase |
+| `BLUETOOTH` | Koneksi printer Bluetooth |
+| `BLUETOOTH_ADMIN` | Manajemen Bluetooth |
+| `BLUETOOTH_CONNECT` | Koneksi perangkat Bluetooth (Android 12+) |
+| `BLUETOOTH_SCAN` | Scan perangkat Bluetooth (Android 12+) |
+| `ACCESS_FINE_LOCATION` | Diperlukan untuk scan Bluetooth |
+| `ACCESS_COARSE_LOCATION` | Diperlukan untuk scan Bluetooth |
+
+---
+
+## 🚀 Cara Menjalankan
+
+### Prasyarat
+- **Android Studio** Ladybug (2024.2) atau yang lebih baru
+- **JDK 11** atau yang lebih baru
+- **Android SDK** dengan API Level 36
+- Akun **Firebase** yang sudah dikonfigurasi
+
+### Langkah-langkah
+
+1. **Clone repository**
+   ```bash
+   git clone <repository-url>
+   cd Semester2
+   ```
+
+2. **Konfigurasi Firebase**
+   - Buat project di [Firebase Console](https://console.firebase.google.com/)
+   - Aktifkan **Authentication** (Email/Password)
+   - Aktifkan **Realtime Database**
+   - Aktifkan **Cloud Storage**
+   - Download file `google-services.json` dan letakkan di folder `app/`
+
+3. **Buka di Android Studio**
+   - File → Open → Pilih folder project
+   - Tunggu Gradle sync selesai
+
+4. **Jalankan Aplikasi**
+   - Hubungkan perangkat Android atau gunakan emulator
+   - Klik tombol **Run** ▶ atau tekan `Shift + F10`
+
+---
+
+## 📄 Lisensi
+
+Project ini dibuat untuk keperluan tugas **Semester 2** — Pengembangan Aplikasi Mobile Android.
+
+---
+
+<p align="center">
+  Dibuat dengan ❤️ menggunakan Kotlin & Firebase
+</p>
