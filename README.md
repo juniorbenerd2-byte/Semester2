@@ -263,5 +263,5 @@ Project ini dibuat untuk keperluan tugas **Semester 2** — Pengembangan Aplikas
 ---
 
 <p align="center">
-  Dibuat dengan ❤️ menggunakan Kotlin & Firebase
+  Dibuat dengan Kotlin & Firebase
 </p>
